@@ -1,4 +1,4 @@
-class ApiResponse {
+class apiResponse {
     constructor(statusCode, data, message = "Success") {
         this.statusCode = statusCode;
         if (data !== undefined && data !== null && Object.keys(data).length !== 0) {
@@ -9,4 +9,4 @@ class ApiResponse {
     }
 }
 
-export { ApiResponse };
+export { apiResponse };
