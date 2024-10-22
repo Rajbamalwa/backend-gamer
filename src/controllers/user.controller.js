@@ -21,6 +21,9 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 export const sendOtp = asyncHandler(async (req, res) => {
+    return res.status(400).json(new ApiResponse(400, '', 'Phone number is required'));
+    return
+
     try {
         const { phoneNumber } = req.body;
 
