@@ -9,7 +9,7 @@ const isAutheticated = asyncHandler(async (req, _, next) => {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
        
         if (!token) {
-            return res.status(401).json(new apiResponse(401, '', 'Unothorised Uers'));
+            return res.status(401).json(new ApiResponse(401, '', 'Unothorised Uers'));
 
         }
 
@@ -17,7 +17,7 @@ const isAutheticated = asyncHandler(async (req, _, next) => {
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
         
         if (!user) {
-            return res.status(401).json(new apiResponse(401, '', 'Invalid Access Token'));
+            return res.status(401).json(new ApiResponse(401, '', 'Invalid Access Token'));
 
         }
 
@@ -25,7 +25,7 @@ const isAutheticated = asyncHandler(async (req, _, next) => {
         next()
         
     } catch (error) {
-        return res.status(401).json(new apiResponse (401, error?.message || "Invalid access token"));
+        return res.status(401).json(new ApiResponse (401, error?.message || "Invalid access token"));
 
     }
 

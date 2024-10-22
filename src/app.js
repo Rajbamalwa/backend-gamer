@@ -28,8 +28,15 @@ app.use(cookieParser())
 
 //routes import
 import userRouter from './routes/user.routes.js'
+import gameTypeRouter from './routes/gameType.routes.js'
+import groundRouter from './routes/ground.routes.js'
+import gameFeaturesRouter from './routes/gameFeatures.routes.js'
+
 
 //routes declaration
 app.use("/api/v1/user", userRouter)
+app.use("/api/v1/game-type", gameTypeRouter)
+app.use("/api/v1/game-fetures", gameFeaturesRouter)
+app.use("/api/v1/ground", groundRouter)
 
 export { app }
