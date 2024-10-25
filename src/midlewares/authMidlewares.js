@@ -1,9 +1,10 @@
 import { User } from '../models/user.model.js'
 import jwt from "jsonwebtoken"
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiResponse } from '../utils/ApiResponse.js';
 
 
-const isAutheticated = asyncHandler(async (req, _, next) => {
+const isAutheticated = asyncHandler(async (req, res, next) => {
     try {
 
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")

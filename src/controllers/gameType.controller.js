@@ -17,13 +17,9 @@ export const createGameType = asyncHandler(async (req, res) => {
 
         // Create a new GameType
         const newGameType = await GameType.create({ name });
+        return res.status(200).json(new ApiResponse(200, newGameType, 'Game type created successfully!'));
 
-        return res.status(201).json({
-            success: true,
-            data: newGameType,
-            msg: 'Game type created successfully!',
-        });
-
+     
     } catch (error) {
         console.log(error);
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
@@ -33,12 +29,7 @@ export const createGameType = asyncHandler(async (req, res) => {
 export const getAllGameTypes = asyncHandler(async (req, res) => {
     try {
         const gameTypes = await GameType.find();
-
-        return res.status(200).json({
-            success: true,
-            data: gameTypes,
-            msg: 'Game types fetched successfully!',
-        });
+        return res.status(200).json(new ApiResponse(200, gameTypes));
 
     } catch (error) {
         console.log(error);
