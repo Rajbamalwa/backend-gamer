@@ -65,7 +65,7 @@ const groundSchema = new Schema({
         default: false
     },
     phone: {
-        type: String,
+        type: Number,
     },
     email: {
         type: String,

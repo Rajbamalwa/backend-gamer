@@ -12,7 +12,7 @@ const router = Router()
 
 import { isAutheticated } from "../midlewares/authMidlewares.js";
 
-router.route("/create").post(isAutheticated,createGround)
+router.route("/create").post(createGround)
 router.route("/get-all").get(isAutheticated,getAllGrounds)
 router.route("/details/:_id").get(isAutheticated,getGroundDetails)
 

@@ -16,12 +16,7 @@ export const createGameFeature = asyncHandler(async (req, res) => {
         }
 
         const newGameFeature = await GameFeatures.create({ name });
-
-        return res.status(201).json({
-            success: true,
-            data: newGameFeature,
-            msg: 'Game feature created successfully!',
-        });
+        return res.status(400).json(new ApiResponse(400, newGameFeature, 'Game feature created successfully!'))
 
     } catch (error) {
         console.log(error);
@@ -32,12 +27,12 @@ export const createGameFeature = asyncHandler(async (req, res) => {
 export const getAllGameFeatures = asyncHandler(async (req, res) => {
     try {
         const gameFeatures = await GameFeatures.find();
+        if(gameFeatures.length > 0){
+            return res.status(200).json(new ApiResponse(200, gameFeatures))
 
-        return res.status(200).json({
-            success: true,
-            data: gameFeatures,
-            msg: 'Game features fetched successfully!',
-        });
+        }
+        return res.status(400).json(new ApiResponse(400,'','No Data Found'))
+
 
     } catch (error) {
         console.log(error);

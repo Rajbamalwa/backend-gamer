@@ -11,8 +11,8 @@ const router = Router()
 
 import { isAutheticated } from "../midlewares/authMidlewares.js";
 
-router.route("/create").post(isAutheticated,createGameFeature)
-router.route("/get-all").get(isAutheticated,getAllGameFeatures)
+router.route("/create").post(createGameFeature)
+router.route("/get-all").get(getAllGameFeatures)
 
 
 
