@@ -1,42 +1,42 @@
 import mongoose, { Schema } from "mongoose";
 
 const groundSchema = new Schema({
-    name: {
+    name: { //
         type: String,
     },
-    description: {
+    description: { //
         type: String,
     },
-    lat: {
+    lat: { //
         type: Number,
     },
-    lng: {
+    lng: { //
         type: Number,
     },
-    city: {
+    city: { //
         type: String,
     },
-    state: {
+    state: { //
         type: String,
     },
-    country: {
+    country: { //
         type: String,
     },
-    address: {
+    address: { //
         type: String,
         required: true
     },
-    index: {
+    index: { //
         type: Number,
     },
-    image: {
+    image: { //
         type: String,
     },
-    likes: {
+    likes: { //
         type: Number,
         default: 0
     },
-    bookingStatus: {
+    bookingStatus: { //-------
         type: Boolean,
         default: true
     },
@@ -44,36 +44,30 @@ const groundSchema = new Schema({
         type: Boolean,
         default: false
     },
-    equipmentProvide: {
+    equipmentProvide: { //--//
         type: Boolean,
         default: false
     },
-    toilet: {
+    toilet: {  //--//
         type: Boolean,
         default: false
     },
-    changingRoom: {
+    changingRoom: {  //--//
         type: Boolean,
         default: false
     },
-    parking: {
+    parking: {  //--//
         type: Boolean,
         default: false
     },
-    showers: {
+    showers: {  //--//
         type: Boolean,
         default: false
     },
-    phone: {
-        type: Number,
-    },
-    email: {
+    cancelPolicy: { // --
         type: String,
     },
-    cancelPolicy: {
-        type: String,
-    },
-    refundPolicy: {
+    refundPolicy: {  // --
         type: String,
     },
     hostStatus: {
@@ -81,14 +75,18 @@ const groundSchema = new Schema({
         enum: ['active', 'inactive'],
         default: 'active'
     },
-    gameTypeId: {
+    gameTypeId: { //--
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameType',
     },
-    gameFeaturesId: {
+    gameFeaturesId: { //--
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameFeatures',
     },
+    // userId :  { //--
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+    // }
 }, { timestamps: true });
 
 export const Ground = mongoose.model("Ground", groundSchema);

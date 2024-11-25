@@ -17,29 +17,71 @@ export const createGround = asyncHandler(async (req, res) => {
 });
 
 export const getAllGrounds = asyncHandler(async (req, res) => {
+
+    const { gameType } = req.query
+
     try {
-        const { page = 1, limit = 10 } = req.query;
-        const skip = (page - 1) * limit;
 
-        const grounds = await Ground.find()
-            .populate('gameTypeId')
-            .populate('gameFeaturesId')
-            .skip(skip)
-            .limit(Number(limit));
-
-        // Get total ground count
-        const totalGrounds = await Ground.countDocuments();
-
-        return res.status(200).json({
-            success: true,
-            data: grounds,
-            pagination: {
-                currentPage: Number(page),
-                totalPages: Math.ceil(totalGrounds / limit),
-                totalItems: totalGrounds,
+        const groundList = await Ground.aggregate([
+            {
+                $lookup: {
+                    from: 'gametypes',
+                    localField: 'gameTypeId',
+                    foreignField: '_id',
+                    as: 'gameType',
+                },
             },
-            msg: 'Grounds fetched successfully!',
-        });
+            {
+                $unwind: {
+                    path: '$gameType',
+                },
+            },
+            {
+                $match: {
+                    ...(gameType && gameType !== "all" ? { 'gameType.name': gameType } : {}),
+                },
+              },
+            {
+                $lookup: {
+                    from: 'gamefeatures',
+                    localField: 'gameFeaturesId',
+                    foreignField: '_id',
+                    as: 'gameFeatures',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$gameFeatures',
+                },
+            },
+            {
+                $project : {
+                    name : 1,
+                    description : 1,
+                    lat : 1,
+                    lng : 1,
+                    city : 1,
+                    state : 1,
+                    country : 1,
+                    address : 1,
+                    image : 1,
+                    index : 1,
+                    likes : 1,
+                    equipmentProvide : 1,
+                    toilet : 1,
+                    changingRoom : 1,
+                    parking : 1,
+                    showers : 1,
+                  
+                }
+            }
+        ])
+
+        if(groundList.length === 0){
+            return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
+
+        }
+        return res.status(200).json(new ApiResponse(200, groundList));
 
     } catch (error) {
         console.log(error);
@@ -49,7 +91,7 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 
 export const getGroundDetails = asyncHandler(async (req, res) => {
 
-    const {_id} = req.user
+    const { _id } = req.user
 
     try {
 
