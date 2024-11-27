@@ -37,11 +37,11 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 
                 },
             },
-            // {
-            //     $match: {
-            //         ...(gameType && gameType !== "all" ? { 'gameType.name': gameType } : {}),
-            //     },
-            //   },
+            {
+                $match: {
+                    ...(gameType && gameType !== "all" ? { 'gameType.name': gameType } : {}),
+                },
+              },
             {
                 $lookup: {
                     from: 'gamefeatures',
