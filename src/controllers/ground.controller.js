@@ -93,16 +93,28 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }
 });
-
 export const getGroundDetails = asyncHandler(async (req, res) => {
-
-    const { _id } = req.user
+    const { _id } = req.params;
 
     try {
+        const groundDetails = await Ground.findById(_id)
+            .populate({
+                path: 'gameTypeId',
+                select: 'name description', 
+            })
+            .populate({
+                path: 'gameFeaturesId',
+                select: 'name description',
+            })
+            .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId'); 
 
+        if (!groundDetails) {
+            return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
+        }
+
+        return res.status(200).json(new ApiResponse(200, groundDetails));
     } catch (error) {
+        console.error(error);
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
-
     }
-
-})
+});
