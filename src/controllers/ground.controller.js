@@ -21,7 +21,6 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
     const { gameType } = req.query
 
     try {
-
         const groundList = await Ground.aggregate([
             {
                 $lookup: {
@@ -34,13 +33,15 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
             {
                 $unwind: {
                     path: '$gameType',
+                    preserveNullAndEmptyArrays: true, // Ensures documents are not removed if gameType is null/empty
+
                 },
             },
-            {
-                $match: {
-                    ...(gameType && gameType !== "all" ? { 'gameType.name': gameType } : {}),
-                },
-              },
+            // {
+            //     $match: {
+            //         ...(gameType && gameType !== "all" ? { 'gameType.name': gameType } : {}),
+            //     },
+            //   },
             {
                 $lookup: {
                     from: 'gamefeatures',
@@ -52,6 +53,8 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
             {
                 $unwind: {
                     path: '$gameFeatures',
+                    preserveNullAndEmptyArrays: true, // Ensures documents are not removed if gameType is null/empty
+
                 },
             },
             {
@@ -76,6 +79,8 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
                 }
             }
         ])
+
+        
 
         if(groundList.length === 0){
             return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
