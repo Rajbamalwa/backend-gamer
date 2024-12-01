@@ -13,7 +13,7 @@ import { isAutheticated } from "../midlewares/authMidlewares.js";
 
 router.route("/create").post(createGameFeature)
 router.route("/get-all").get(getAllGameFeatures)
-router.route("/delete/:_id").delete(deleteGameFeatures)
+router.route("/delete/:_id").post(deleteGameFeatures)
 
 
 

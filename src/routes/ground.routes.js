@@ -17,7 +17,7 @@ router.route("/create").post(createGround)
 router.route("/list").get(getAllGrounds)
 router.route("/details/:_id").get(getGroundDetails)
 router.route("/update/:_id").post(groundUpdate)
-router.route("/delete/:_id").delete(groundDelete)
+router.route("/delete/:_id").post(groundDelete)
 
 
 

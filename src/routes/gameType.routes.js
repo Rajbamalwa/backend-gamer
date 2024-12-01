@@ -14,7 +14,7 @@ import { isAutheticated } from "../midlewares/authMidlewares.js";
 
 router.route("/create").post(createGameType)
 router.route("/get-all").get(getAllGameTypes)
-router.route("/delete/:_id").delete(deleteGameTypes)
+router.route("/delete/:_id").post(deleteGameTypes)
 
 
 
