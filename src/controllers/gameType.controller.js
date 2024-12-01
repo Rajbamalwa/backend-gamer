@@ -36,3 +36,25 @@ export const getAllGameTypes = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }
 });
+
+
+
+export const deleteGameTypes = asyncHandler(async (req, res) => {
+
+    const { _id } = req.params;
+
+    try {
+        const gameType = await GameType.findById(_id)
+        if(!gameType){
+            return res.status(404).json(new ApiResponse(404, '', 'No data found'));
+        }
+
+        const gameTypes = await GameType.findByIdAndDelete(_id);
+        return res.status(200).json(new ApiResponse(200, '','Deleted Sucessfully'));
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+    }
+});
+

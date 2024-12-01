@@ -148,3 +148,24 @@ export const groundUpdate = asyncHandler(async(req,res)=>{
     }
 
 })
+
+export const groundDelete = asyncHandler(async(req,res)=>{
+    const { _id } = req.params;
+
+    try {
+
+        const ground = await Ground.findById(_id)
+        if(!ground){
+            return res.status(404).json(new ApiResponse(404, '', 'No data found'));
+        }
+        await Ground.findByIdAndDelete(_id)
+        return res.status(200).json(new ApiResponse(200, '', 'Delete successfully'));
+
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+    }
+
+
+})
