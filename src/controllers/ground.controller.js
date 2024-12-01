@@ -118,3 +118,33 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }
 });
+
+
+export const groundUpdate = asyncHandler(async(req,res)=>{
+
+    const { _id } = req.params;
+    const {updateField,updatedValue} = req.body
+
+    try {
+
+        const ground = await Ground.findById(_id)
+        if(!ground){
+            return res.status(404).json(new ApiResponse(404, '', 'No data found'));
+        }
+
+        // Validate updateField
+        if (!updateField || !(updateField in Ground.schema.paths)) {
+            return res.status(400).json(new ApiResponse(400, '', 'Invalid update field'));
+        }
+
+        ground[updateField] = updatedValue;
+        const updatedGround = await ground.save();
+        return res.status(200).json(new ApiResponse(200, updatedGround, 'Updated successfully'));
+
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+    }
+
+})

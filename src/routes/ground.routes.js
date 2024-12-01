@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
     createGround,
     getAllGrounds,
-    getGroundDetails
- 
+    getGroundDetails,
+    groundUpdate
     
 } from "../controllers/ground.controller.js";
 
@@ -15,6 +15,7 @@ import { isAutheticated } from "../midlewares/authMidlewares.js";
 router.route("/create").post(createGround)
 router.route("/list").get(getAllGrounds)
 router.route("/details/:_id").get(getGroundDetails)
+router.route("/update/:_id").put(groundUpdate)
 
 
 

@@ -4,33 +4,16 @@ import jwt from "jsonwebtoken"
 
 const userSchema = new Schema(
     {
-        name: {
-            type: String,
-            // required: true
 
-        },
         phoneNumber: {
             type: Number,
-            // required: true
+            required: true
 
         },
-    
-        imageUrl: {
-            type: String,
-        },
-        lat: {
-            type: Number,
-
-        },
-        lng: {
-            type: Number,
-
-        },
-        locationName: {
-            type: String,
-        },
-       
-
+        isUserOrOwner: {
+            type: Boolean,
+            default: true
+        }
     },
     {
         timestamps: true
