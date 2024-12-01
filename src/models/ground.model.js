@@ -29,9 +29,9 @@ const groundSchema = new Schema({
     index: { //
         type: Number,
     },
-    image: { //
+    image: [{ //
         type: String,
-    },
+    }],
     likes: { //
         type: Number,
         default: 0
@@ -75,14 +75,14 @@ const groundSchema = new Schema({
         enum: ['active', 'inactive'],
         default: 'active'
     },
-    gameTypeId: { //--
+    gameTypeId: [{ //--
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameType',
-    },
-    gameFeaturesId: { //--
+    }],
+    gameFeaturesId: [{ //--
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameFeatures',
-    },
+    }],
     // userId :  { //--
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'User',
