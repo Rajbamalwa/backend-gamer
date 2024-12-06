@@ -75,12 +75,12 @@ export const sendOtp = asyncHandler(async (req, res) => {
 export const verifyOtp = asyncHandler(async (req, res) => {
 
     try {
-        const { phoneNumber, otp } = req.body;
+        const { phoneNumber, otp,isUserOrOwner } = req.body;
 
         if (!phoneNumber || !otp) {
             return res.status(400).json(new ApiResponse(400, '', 'Phone number and OTP are required'));
         }
-
+ 
         const otpRecord = await Otp.findOne({ phoneNumber, otp });
         if (!otpRecord) {
             return res.status(400).json(new ApiResponse(400, '', 'Invalid OTP'));
@@ -90,10 +90,10 @@ export const verifyOtp = asyncHandler(async (req, res) => {
             return res.status(400).json(new ApiResponse(400, '', 'OTP expired'));
         }
 
-        let user = await User.findOne({ phoneNumber });
+        let user = await User.findOne({ phoneNumber, isUserOrOwner: isUserOrOwner || 'user' });
 
         if (!user) {
-            user = await User.create({ phoneNumber });
+            user = await User.create({ phoneNumber,isUserOrOwner: isUserOrOwner || 'user' });
         }
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
         // Set cookie options

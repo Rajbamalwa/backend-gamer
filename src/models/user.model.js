@@ -11,8 +11,9 @@ const userSchema = new Schema(
 
         },
         isUserOrOwner: {
-            type: Boolean,
-            default: true
+            type: String,
+            enum: ['user', 'owner'], 
+            default: 'user',
         }
     },
     {
