@@ -14,11 +14,11 @@ export const registerGroundOwner = asyncHandler(async (req, res) => {
             adharImage,
         } = req.body;
 
-        const existingOwner = await GroundOwnerDetails.findOne({ phoneNo });
+        // const existingOwner = await GroundOwnerDetails.findOne({ phoneNo });
 
-        if (existingOwner) {
-            return res.status(400).json(new ApiResponse(400, '', 'Ground Owner already exists with this phone number'));
-        }
+        // if (existingOwner) {
+        //     return res.status(400).json(new ApiResponse(400, '', 'Ground Owner already exists with this phone number'));
+        // }
 
         const groundOwner = await GroundOwnerDetails.create({
             name,

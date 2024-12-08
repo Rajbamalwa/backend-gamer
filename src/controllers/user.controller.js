@@ -4,6 +4,7 @@ import { User } from '../models/user.model.js';
 import otpGenerator from 'otp-generator';
 import axios from 'axios';
 import { Otp } from "../models/otp.model.js";
+import { GroundOwnerDetails } from "../models/groundOwnerDetails.model.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -75,12 +76,20 @@ export const sendOtp = asyncHandler(async (req, res) => {
 export const verifyOtp = asyncHandler(async (req, res) => {
 
     try {
-        const { phoneNumber, otp,isUserOrOwner } = req.body;
+        const { phoneNumber, otp,isOwner } = req.body;
 
         if (!phoneNumber || !otp) {
             return res.status(400).json(new ApiResponse(400, '', 'Phone number and OTP are required'));
         }
- 
+
+        // check user and owne and after -- owner is verified or not 
+        if(isOwner){
+            const {isVerified} = await GroundOwnerDetails.findOne({phoneNo:phoneNumber})
+            if(!isVerified){
+                return res.status(400).json(new ApiResponse(400, '', 'user is not verified'));
+            }
+        }
+
         const otpRecord = await Otp.findOne({ phoneNumber, otp });
         if (!otpRecord) {
             return res.status(400).json(new ApiResponse(400, '', 'Invalid OTP'));
@@ -90,10 +99,10 @@ export const verifyOtp = asyncHandler(async (req, res) => {
             return res.status(400).json(new ApiResponse(400, '', 'OTP expired'));
         }
 
-        let user = await User.findOne({ phoneNumber, isUserOrOwner: isUserOrOwner || 'user' });
+        let user = await User.findOne({ phoneNumber, isOwner: isOwner || false });
 
         if (!user) {
-            user = await User.create({ phoneNumber,isUserOrOwner: isUserOrOwner || 'user' });
+            user = await User.create({ phoneNumber,isOwner: isOwner || false });
         }
         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
         // Set cookie options

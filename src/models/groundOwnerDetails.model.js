@@ -6,13 +6,13 @@ const groundOwnerDetails = new Schema(
       type: String,
     },
     email: {
-      type: Number,
+      type: String,
     },
     phoneNo: {
       type: Number,
     },
     currentPhoneNo: {
-      type: String,
+      type: Number,
     },
     address:{
         type: String,

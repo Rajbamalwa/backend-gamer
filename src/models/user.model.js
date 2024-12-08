@@ -10,10 +10,10 @@ const userSchema = new Schema(
             required: true
 
         },
-        isUserOrOwner: {
+        isOwner: {
             type: String,
-            enum: ['user', 'owner'], 
-            default: 'user',
+            // enum: ['user', 'owner'], 
+            default: false,
         }
     },
     {
