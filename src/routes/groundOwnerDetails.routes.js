@@ -8,7 +8,7 @@ const router = Router()
 
 import { isAutheticated } from "../midlewares/authMidlewares.js";
 
-router.route("/register-ground-owner").post(registerGroundOwner)
+router.route("/register-ground-owner").post(isAutheticated,registerGroundOwner)
 
 
 export default router
