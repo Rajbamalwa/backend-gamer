@@ -6,9 +6,9 @@ import {
 
 const router = Router()
 
-import { isAutheticated,isOwner } from "../midlewares/authMidlewares.js";
+import { isAutheticated,isUser } from "../midlewares/authMidlewares.js";
 
-router.route("/create").post(isAutheticated,addDetails)
+router.route("/create").post(isAutheticated,isUser(true),addDetails)
 
 
 export default router

@@ -4,6 +4,8 @@ import {UserDetails}  from '../models/userDetails.model.js'
 
 
 export const addDetails = asyncHandler(async (req, res) => {
+  
+    
     const { _id } = req.user; 
     const { name, imageUrl, locationName, lat, lng } = req.body;
 

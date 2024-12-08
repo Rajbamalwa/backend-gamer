@@ -31,24 +31,23 @@ const isAutheticated = asyncHandler(async (req, res, next) => {
     }
 
 })
-
-const isOwner = (isUser = false) => {
-    console.log("ets",isUser);
-
+const isUser = (isUser) => {
+    
     return (req, _, next) => {
+        const {isOwner} =  req.user
+        console.log(isOwner);
         
-        if (req.isOwner === isUser) {
-            next();
-        }else{
-            console.log("this ");
-            
-            throw new ApiError(401, "wrong user");
+        if (isOwner === false && isUser === true) {
+           return next();
         }
+
+
+        return new ApiError(401, 'Unauthorized: wrong user');
     };
 };
 
 
 
-export { isAutheticated,isOwner }
+export { isAutheticated,isUser }
 
 
