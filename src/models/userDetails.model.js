@@ -23,7 +23,7 @@ const userDetailsSchema = new Schema(
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'UserDetails',
+            ref: 'User',
         }
     },
     {

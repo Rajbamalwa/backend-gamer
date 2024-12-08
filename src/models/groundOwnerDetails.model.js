@@ -18,17 +18,17 @@ const groundOwnerDetails = new Schema(
         type: String,
     },
     adharImage : {
-        type: String,
+        type: String,  
     },
     isVerified:{
         type : Boolean,
         default : false
-    }
-    // userId: {
-    //   //--
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'UserDetails',
-    // },
+    },
+    userId: {
+      //--
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

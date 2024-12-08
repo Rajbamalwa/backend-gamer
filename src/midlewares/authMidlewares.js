@@ -32,7 +32,23 @@ const isAutheticated = asyncHandler(async (req, res, next) => {
 
 })
 
+const isOwner = (isUser = false) => {
+    console.log("ets",isUser);
 
-export { isAutheticated }
+    return (req, _, next) => {
+        
+        if (req.isOwner === isUser) {
+            next();
+        }else{
+            console.log("this ");
+            
+            throw new ApiError(401, "wrong user");
+        }
+    };
+};
+
+
+
+export { isAutheticated,isOwner }
 
 

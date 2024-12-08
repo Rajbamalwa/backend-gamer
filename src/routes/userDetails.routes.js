@@ -1,15 +1,14 @@
 import { Router } from "express";
 import {
-    addDetails
-    
+    addDetails,
 } from "../controllers/userDetails.controller.js";
 
 
 const router = Router()
 
-import { isAutheticated } from "../midlewares/authMidlewares.js";
+import { isAutheticated,isOwner } from "../midlewares/authMidlewares.js";
 
-router.route("/create").post(addDetails)
+router.route("/create").post(isAutheticated,addDetails)
 
 
 export default router
