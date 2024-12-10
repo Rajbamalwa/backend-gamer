@@ -4,7 +4,7 @@ import { GameType } from "../models/gameType.model.js";
 
 export const createGameType = asyncHandler(async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name,image,hexColour } = req.body;
 
         if (!name) {
             return res.status(400).json(new ApiResponse(400, '', 'Game type name is required'));
@@ -16,7 +16,7 @@ export const createGameType = asyncHandler(async (req, res) => {
         }
 
         // Create a new GameType
-        const newGameType = await GameType.create({ name });
+        const newGameType = await GameType.create({ name,image,hexColour });
         return res.status(200).json(new ApiResponse(200, newGameType, 'Game type created successfully!'));
 
      
