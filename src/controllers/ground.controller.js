@@ -105,7 +105,7 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
                 path: 'gameFeaturesId',
                 select: 'name description',
             })
-            .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId image'); 
+            // .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId image'); 
 
         if (!groundDetails) {
             return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
