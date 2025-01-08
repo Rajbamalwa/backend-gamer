@@ -5,10 +5,14 @@ import jwt from "jsonwebtoken"
 const userSchema = new Schema(
     {
 
-        phoneNumber: {
-            type: Number,
-            required: true
+        // phoneNumber: {
+        //     type: Number,
+        //     required: true
 
+        // },
+        email : {
+            type: String,
+            required: true
         },
         isOwner: {
             type: Boolean,
