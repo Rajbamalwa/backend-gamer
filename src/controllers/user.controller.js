@@ -17,7 +17,9 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
         return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating refresh and access token");
+        console.log(error);
+        
+        // throw new ApiError(500, "Something went wrong while generating refresh and access token");
     }
 };
 
@@ -63,8 +65,8 @@ export const loginUser = asyncHandler(async (req, res) => {
         }
 
         // Generate tokens
-        const accessToken = user.generateAccessAndRefreshTokens();
-        const refreshToken = user.generateAccessAndRefreshTokens();
+        const accessToken = await generateAccessAndRefreshTokens();
+        const refreshToken = await generateAccessAndRefreshTokens();
 
         // Set cookie options
         const options = {
