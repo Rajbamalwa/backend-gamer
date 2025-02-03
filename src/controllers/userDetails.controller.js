@@ -37,10 +37,32 @@ export const addDetails = asyncHandler(async (req, res) => {
         });
 
         return res.status(201).json(
-            new ApiResponse(201, { userDetails: newUserDetails }, 'User details created successfully')
+            new ApiResponse(201,  newUserDetails , 'User details created successfully')
         );
     } catch (error) {
         console.error('Error adding user details:', error);
+        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+    }
+});
+
+
+
+// Get UserDetails by User ID
+export const getUserDetailsById = asyncHandler(async (req, res) => {
+
+    try {
+        const { _id } = req.params;
+        
+        const userDetails = await UserDetails.findOne({userId:_id }).populate('userId')
+        
+        
+        if (!userDetails) {
+            return res.status(404).json(new ApiResponse(404, '', 'No user details found'));
+        }
+        
+        return res.status(200).json(new ApiResponse(200, userDetails));
+    } catch (error) {
+        console.error('Error fetching user details:', error);
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }
 });

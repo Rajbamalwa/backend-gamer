@@ -65,8 +65,8 @@ export const loginUser = asyncHandler(async (req, res) => {
         }
 
         // Generate tokens
-        const accessToken = await generateAccessAndRefreshTokens();
-        const refreshToken = await generateAccessAndRefreshTokens();
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
 
         // Set cookie options
         const options = {
