@@ -48,10 +48,17 @@ export const getNotificationById = asyncHandler(async (req, res) => {
 // Update Notification
 export const updateNotification = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
-        const updatedData = req.body;
+        const { _id } = req.params;
+        const {name,description,image,link} = req.body;
         
-        const updatedNotification = await Notification.findByIdAndUpdate(id, updatedData, { new: true });
+        
+        const updateFields = {};
+        if (name !== undefined) updateFields.name = name;
+        if (description !== undefined) updateFields.description = description;
+        if (image !== undefined) updateFields.image = image;
+        if (link !== undefined) updateFields.link = link;
+
+        const updatedNotification = await Notification.findByIdAndUpdate(_id, updateFields, { new: true });
         if (!updatedNotification) {
             return res.status(404).json(new ApiResponse(404, '', 'Notification not found'));
         }
@@ -65,8 +72,8 @@ export const updateNotification = asyncHandler(async (req, res) => {
 // Delete Notification
 export const deleteNotification = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
-        const notification = await Notification.findByIdAndDelete(id);
+        const { _id } = req.params;
+        const notification = await Notification.findByIdAndDelete(_id);
         if (!notification) {
             return res.status(404).json(new ApiResponse(404, '', 'Notification not found'));
         }

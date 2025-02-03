@@ -9,7 +9,7 @@ const contactUsSchema = new Schema({
     type: {
         type: String,
     },
-    titile: {
+    title: {
         type: String,
     },
     description: {

@@ -51,8 +51,8 @@ export const addDetails = asyncHandler(async (req, res) => {
 export const getUserDetailsById = asyncHandler(async (req, res) => {
 
     try {
-        const { _id } = req.params;
-        
+        const { _id } = req.user
+                
         const userDetails = await UserDetails.findOne({userId:_id }).populate('userId')
         
         

@@ -49,10 +49,16 @@ export const getContactUsById = asyncHandler(async (req, res) => {
 // Update ContactUs Entry
 export const updateContactUs = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
-        const updatedData = req.body;
+        const { _id } = req.params;
+        const {type,title,description,image} = req.body;
+
+        const updateFields = {};
+        if (type !== undefined) updateFields.type = type;
+        if (title !== undefined) updateFields.title = title;
+        if (description !== undefined) updateFields.description = description;
+        if (image !== undefined) updateFields.image = image;
         
-        const updatedContactUs = await ContactUs.findByIdAndUpdate(id, updatedData, { new: true });
+        const updatedContactUs = await ContactUs.findByIdAndUpdate(_id, updateFields, { new: true });
         if (!updatedContactUs) {
             return res.status(404).json(new ApiResponse(404, '', 'ContactUs entry not found'));
         }
@@ -66,8 +72,8 @@ export const updateContactUs = asyncHandler(async (req, res) => {
 // Delete ContactUs Entry
 export const deleteContactUs = asyncHandler(async (req, res) => {
     try {
-        const { id } = req.params;
-        const contactUsEntry = await ContactUs.findByIdAndDelete(id);
+        const { _id } = req.params;
+        const contactUsEntry = await ContactUs.findByIdAndDelete(_id);
         if (!contactUsEntry) {
             return res.status(404).json(new ApiResponse(404, '', 'ContactUs entry not found'));
         }
