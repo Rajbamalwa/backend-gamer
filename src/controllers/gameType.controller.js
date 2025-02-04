@@ -27,9 +27,14 @@ export const createGameType = asyncHandler(async (req, res) => {
 });
 
 export const getAllGameTypes = asyncHandler(async (req, res) => {
+    
     try {
-        const gameTypes = await GameType.find();
-        return res.status(200).json(new ApiResponse(200, gameTypes));
+        const gameTypes = await GameType.find({});
+        if(gameTypes.length > 0){
+            return res.status(200).json(new ApiResponse(200, gameTypes));
+        }
+        return res.status(404).json(new ApiResponse(404, '', 'No data found'));
+
 
     } catch (error) {
         console.log(error);
