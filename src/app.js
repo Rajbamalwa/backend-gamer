@@ -36,6 +36,7 @@ import groundOwnerRouter from './routes/groundOwnerDetails.routes.js'
 import authRouter from './routes/auth.routes.js'
 import notificationRouter from './routes/notification.routes.js'
 import contactUsRouter from './routes/contactUs.routes.js'
+import reviewsRoute from './routes/reviews.routes.js'
 
 //routes declaration
 app.use("/api/v1/user", userRouter)
@@ -48,6 +49,7 @@ app.use("/api/v1/auth", authRouter)
 
 app.use("/api/v1/notification", notificationRouter)
 app.use("/api/v1/contact-us", contactUsRouter)
+app.use("/api/v1/reviews", reviewsRoute)
 
 
 export { app }

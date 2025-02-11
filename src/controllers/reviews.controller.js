@@ -32,14 +32,17 @@ export const createReview = asyncHandler(async (req, res) => {
     }
 });
 
-export const getAllReviews = asyncHandler(async (req, res) => {
+export const getAllReviewsById = asyncHandler(async (req, res) => {
+
+    const {_id} = req.params
+
     try {
         const { page = 1, limit = 10 } = req.query; 
         const skip = (page - 1) * limit;
 
-        const reviews = await Reviews.find()
-            .populate('groundId', 'name') 
-            .populate('userId', 'username') 
+        const reviews = await Reviews.find({groundId:_id})
+            // .populate('groundId', 'name') 
+            // .populate('userId', 'name') 
             .skip(skip)
             .limit(Number(limit));
 
