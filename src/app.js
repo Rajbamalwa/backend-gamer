@@ -37,6 +37,7 @@ import authRouter from './routes/auth.routes.js'
 import notificationRouter from './routes/notification.routes.js'
 import contactUsRouter from './routes/contactUs.routes.js'
 import reviewsRoute from './routes/reviews.routes.js'
+import bookingRoute from './routes/booking.routes.js'
 
 //routes declaration
 app.use("/api/v1/user", userRouter)
@@ -50,6 +51,7 @@ app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/notification", notificationRouter)
 app.use("/api/v1/contact-us", contactUsRouter)
 app.use("/api/v1/reviews", reviewsRoute)
+app.use("/api/v1/booking", bookingRoute)
 
 
 export { app }

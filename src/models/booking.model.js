@@ -1,53 +1,31 @@
 import mongoose, { Schema } from "mongoose";
 
-const bookingSchema = new Schema({
-    
-    orderNo: {
-        type: String,
-    },
-    groundId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Ground',
-    },
-    charges: {
-        type: Number,
-    },
-    conveniceFees: {
-        type: Number,
-    },
-    totalAmount: {
-        type: Number,
-    },
-    groundCharge: {
-        type: Number,
-    },
-    platformFee: {
+const schedulingTimeSchema = new Schema({
+    id: {
         type: Number,
     },
     startTime: {
-        type: Number,
+        type: String,
     },
     endTime: {
-        type: Number,
+        type: String,
     },
-    bookingDate: {
-        type: Number,
-    },
-    isBid :{
-        type: Boolean,
-    },
-    bookingStatus: {
-        type: Number,
-    },
-    paymentStatus: {
-        type: Number,
-    },
-    gameType: {
+    mode: {
+        type: String,
+    }
+});
+
+const bookingSchema = new Schema({
+    gameTypeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameType',
+    },
+    date: {
+        type: String,
+    },
+    schedulingTime: {
+        type: [schedulingTimeSchema],
     }
-
-
 }, { timestamps: true });
 
 export const Booking = mongoose.model("Booking", bookingSchema);
