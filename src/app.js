@@ -38,6 +38,7 @@ import notificationRouter from './routes/notification.routes.js'
 import contactUsRouter from './routes/contactUs.routes.js'
 import reviewsRoute from './routes/reviews.routes.js'
 import bookingRoute from './routes/booking.routes.js'
+import likedRoute from './routes/like.routes.js'
 
 //routes declaration
 app.use("/api/v1/user", userRouter)
@@ -52,6 +53,7 @@ app.use("/api/v1/notification", notificationRouter)
 app.use("/api/v1/contact-us", contactUsRouter)
 app.use("/api/v1/reviews", reviewsRoute)
 app.use("/api/v1/booking", bookingRoute)
+app.use("/api/v1/like", likedRoute)
 
 
 export { app }

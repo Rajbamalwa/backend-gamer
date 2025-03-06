@@ -26,3 +26,16 @@ export const createBooking = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }
 });
+
+
+export const checkBookingStatus = asyncHandler(async(req,res)=>{
+    try {
+        
+        const {date } = req.quey
+
+        const allBookingScheduleing = await Booking.find({date})
+
+    } catch (error) {
+        
+    }
+})

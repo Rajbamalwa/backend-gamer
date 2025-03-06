@@ -36,6 +36,10 @@ const groundSchema = new Schema({
         type: Number,
         default: 0
     },
+    likedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
     bookingStatus: { //-------
         type: Boolean,
         default: true
@@ -48,6 +52,22 @@ const groundSchema = new Schema({
         type: Boolean,
         default: false
     },
+    pricing: {
+        type: Number,
+        require: true
+    },
+    discountAmount: {
+        type: Number,
+        require: true
+    },
+    discountText: {
+        type: String,
+        require: true
+    },
+    groundRules: [{
+        type: String
+    }],
+
     toilet: {  //--//
         type: Boolean,
         default: false
@@ -83,10 +103,8 @@ const groundSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'GameFeatures',
     }],
-    // userId :  { //--
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User',
-    // }
+
 }, { timestamps: true });
+
 
 export const Ground = mongoose.model("Ground", groundSchema);
