@@ -1,6 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { Ground } from "../models/ground.model.js";
+import { Reviews } from "../models/reviews.model.js";
+import mongoose from "mongoose";
 
 export const createGround = asyncHandler(async (req, res) => {
 
@@ -17,11 +19,19 @@ export const createGround = asyncHandler(async (req, res) => {
 });
 
 export const getAllGrounds = asyncHandler(async (req, res) => {
-  const { gameType } = req.query;
+  const { gameType,lat,lng } = req.query;
   const { _id } = req.user
-
+  
+  
   try {
     const groundList = await Ground.aggregate([
+      // {
+      //   $geoNear: {
+      //     near: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
+      //     distanceField: "distance",
+      //     spherical: true,
+      //   },
+      // },
       {
         $lookup: {
           from: 'gametypes',
@@ -33,12 +43,12 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
       {
         $unwind: {
           path: '$gameType',
-          preserveNullAndEmptyArrays: true, // Ensures documents are not removed if gameType is null/empty
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
         $match: {
-          ...(gameType && gameType !== 'all' ? { 'gameType.name': gameType } : {}),
+          ...(gameType && { 'gameType.name': gameType }),
         },
       },
       {
@@ -52,9 +62,10 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
       {
         $unwind: {
           path: '$gameFeatures',
-          preserveNullAndEmptyArrays: true, // Ensures documents are not removed if gameFeatures is null/empty
+          preserveNullAndEmptyArrays: true, 
         },
       },
+      
       {
         $project: {
           name: 1,
@@ -64,7 +75,10 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
           city: 1,
           state: 1,
           country: 1,
+          // distance: 1, // Include the calculated distance
+
           address: 1,
+          location: 1,
           image: {
             $cond: {
               if: { $isArray: '$image' },
@@ -113,6 +127,25 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
   const { _id } = req.params;
 
   try {
+
+    const groundReviewRating = await Reviews.aggregate([
+      { $match: { groundId: new mongoose.Types.ObjectId(_id) } },
+      {
+        $group: {
+          _id: "$groundId",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 }, 
+        },
+      },
+      {
+        $project : {
+          _id : 0,
+          averageRating : 1,
+          totalReviews : 1
+        }
+      }
+    ]).then(res => res.at(0) || { averageRating: 0, totalReviews: 0 });
+
     const groundDetails = await Ground.findById(_id)
       .populate({
         path: 'gameTypeId',
@@ -128,7 +161,7 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
       return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
     }
 
-    return res.status(200).json(new ApiResponse(200, groundDetails));
+    return res.status(200).json(new ApiResponse(200, {groundDetails,groundReviewRating},));
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));

@@ -36,7 +36,7 @@ export const getAllGameTypes = asyncHandler(async (req, res) => {
         return res.status(404).json(new ApiResponse(404, '', 'No data found'));
 
 
-    } catch (error) {
+    } catch (error) { 
         console.log(error);
         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
     }

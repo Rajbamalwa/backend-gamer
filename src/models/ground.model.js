@@ -13,6 +13,11 @@ const groundSchema = new Schema({
     lng: { //
         type: Number,
     },
+    location: {
+        type: { type: String, enum: ['Point'], required: true, default: 'Point' },
+        coordinates: { type: [Number], required: true },
+    },
+    
     city: { //
         type: String,
     },
@@ -105,6 +110,7 @@ const groundSchema = new Schema({
     }],
 
 }, { timestamps: true });
+groundSchema.index({ location: "2dsphere" });
 
 
 export const Ground = mongoose.model("Ground", groundSchema);
