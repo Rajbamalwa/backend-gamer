@@ -7,7 +7,7 @@ const groundSchema = new Schema({
     description: { //
         type: String,
     },
-    lat: { //
+    lat: { //   
         type: Number,
     },
     lng: { //
