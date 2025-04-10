@@ -1,10 +1,14 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Booking } from "../models/booking.model.js";
+import {Ground} from "../models/ground.model.js"
 
 export const createBooking = asyncHandler(async (req, res) => {
     try {
-        const { gameTypeId, date, schedulingTime } = req.body;
+        const { gameTypeId, date, schedulingTime,groundId } = req.body;
+        const {_id} = req.user
+        console.log(_id);
+        
 
         if (!gameTypeId) {
             return res.status(400).json(new ApiResponse(400, '', 'Ground ID is required'));
@@ -13,12 +17,15 @@ export const createBooking = asyncHandler(async (req, res) => {
         if (!date) {
             return res.status(400).json(new ApiResponse(400, '', 'Date is required'));
         }
+        if (!groundId) {
+            return res.status(400).json(new ApiResponse(400, '', 'groundId is required'));
+        }
 
         if (!schedulingTime || !Array.isArray(schedulingTime) || schedulingTime.length === 0) {
             return res.status(400).json(new ApiResponse(400, '', 'At least one scheduling time is required'));
         }
 
-        const newBooking = await Booking.create({ gameTypeId, date, schedulingTime });
+        const newBooking = await Booking.create({ gameTypeId, date, schedulingTime ,groundId, userId:_id});
 
         return res.status(200).json(new ApiResponse(200, newBooking, 'Booking created successfully!'));
     } catch (error) {
@@ -40,33 +47,74 @@ export const checkBookingStatus = asyncHandler(async (req, res) => {
     }
 })
 
+// user bookig list
 export const allBooking = asyncHandler(async (req, res) => {
-    
-
-    const { page, pageSize } = req.query
-    const skip = (page - 1) * pageSize
-
     try {
+        let { page, pageSize,date } = req.query;
 
-        const booking = await Booking.find({}).skip(skip).limit(pageSize)
-        
-        if (page) {
-            const totalBooking = await Booking.countDocuments();
-            const totalPages = Math.ceil(totalBooking / pageSize);
+        page = parseInt(page) || 1; // Default to page 1 if not provided
+        pageSize = parseInt(pageSize) || 10; // Default to pageSize 10 if not provided
+        const skip = (page - 1) * pageSize;
 
-            if (page > totalPages) {
-                return res.status(500).json(new ApiResponse(500, '', "Page does't exesist"));
-            }
+        let filter = {};
+        if (date) {
+            filter.date = date; 
+        }
+        const booking = await Booking.find(filter)
+        .skip(skip)
+        .limit(pageSize)
+        // .sort({ _id: 1 })
+        .select("schedulingTime"); // Select only the schedulingTime field
 
-            if (booking.length > 0) {
-                return res.status(200).json(new ApiResponse(200, booking));
+        const totalBooking = await Booking.countDocuments();
+        const totalPages = Math.ceil(totalBooking / pageSize);
 
-            }
-            return res.status(400).json(new ApiResponse(400, '', "No data found"));
+        if (page > totalPages) {
+            return res.status(400).json(new ApiResponse(400, '', "Page doesn't exist"));
         }
 
+        if (booking.length > 0) {
+            return res.status(200).json(new ApiResponse(200, { bookings: booking, totalPages, totalBooking }));
+        }
+        
+        return res.status(404).json(new ApiResponse(404, '', "No data found"));
 
     } catch (error) {
+        console.error(error);
+        return res.status(500).json(new ApiResponse(500, '', "Internal Server Error"));
+    }
+});
+ 
 
+export const bookingDetails = asyncHandler(async (req, res) => {
+    const { bookingId } = req.params; 
+
+    try {
+        const booking = await Booking.findById(bookingId).populate('groundId'); 
+
+        if (!booking) {
+            return res.status(400).json(new ApiResponse(400, null, 'Booking not found'));
+        }
+
+        // Step 2: Now booking.groundId contains full ground details (because we populated)
+        const groundDetails = booking.groundId;
+
+        return res.status(200).json(new ApiResponse(200, groundDetails, 'Ground details fetched successfully'));
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json(new ApiResponse(500, null, 'Something went wrong'));
+    }
+});
+
+
+export const groundOwnerBookig = asyncHandler(async(req,res)=>{
+    const {groundId} = req.parms
+    try {
+
+        // const 
+        
+    } catch (error) {
+        
     }
 })

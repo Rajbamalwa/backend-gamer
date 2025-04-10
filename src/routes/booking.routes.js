@@ -1,15 +1,19 @@
 import { Router } from "express";
 import {
     createBooking,
-    allBooking
+    allBooking,
+    bookingDetails,
+    groundOwnerBookig
 } from "../controllers/booking.controller.js";
 
 
 const router = Router()
 
-import { isAutheticated } from "../midlewares/authMidlewares.js";
+import { isAutheticated,isUser } from "../midlewares/authMidlewares.js";
 
-router.route("/create").post(isAutheticated,createBooking)
-router.route("/booking-list").get(isAutheticated,allBooking)
+router.route("/create").post(isAutheticated,isUser(true),createBooking)
+router.route("/user-bookings").get(isAutheticated,isUser(true),allBooking)
+router.route("/user-booking-details/:bookingId").get(isAutheticated,isUser(true),bookingDetails)
+router.route("/owner-bookings/:ownerId").get(isAutheticated,isUser(false),groundOwnerBookig)
 
 export default router

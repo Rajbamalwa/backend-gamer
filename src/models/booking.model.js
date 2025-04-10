@@ -12,7 +12,8 @@ const schedulingTimeSchema = new Schema({
     },
     mode: {
         type: String,
-    }
+    },
+
 });
 
 const bookingSchema = new Schema({
@@ -25,6 +26,14 @@ const bookingSchema = new Schema({
     },
     schedulingTime: {
         type: [schedulingTimeSchema],
+    },
+    groundId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ground',
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }
 }, { timestamps: true });
 
