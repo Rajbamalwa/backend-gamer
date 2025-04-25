@@ -1,9 +1,12 @@
-import mongoose, { now, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const GameFeaturesSchema = new Schema({
-    name: {
-        type: String,
-    },
+const gameFeaturesSchema = new Schema({
+  name: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
 }, { timestamps: true });
 
-export const GameFeatures = mongoose.model("GameFeatures", GameFeaturesSchema);
+export const GameFeatures = mongoose.model("GameFeatures", gameFeaturesSchema);

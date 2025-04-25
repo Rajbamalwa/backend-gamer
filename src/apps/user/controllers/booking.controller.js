@@ -1,7 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { Booking } from "../models/booking.model.js";
-import {Ground} from "../models/ground.model.js"
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { Booking } from "../../../models/booking.model.js";
 
 export const createBooking = asyncHandler(async (req, res) => {
     try {
@@ -124,9 +123,7 @@ export const bookingDetails = asyncHandler(async (req, res) => {
             return res.status(400).json(new ApiResponse(400, null, 'Booking not found'));
         }
 
-        const groundDetails = booking.groundId;
-
-        return res.status(200).json(new ApiResponse(200, groundDetails, 'Ground details fetched successfully'));
+        return res.status(200).json(new ApiResponse(200, booking, 'Ground details fetched successfully'));
         
     } catch (error) {
         console.error(error);

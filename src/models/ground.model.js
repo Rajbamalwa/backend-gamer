@@ -17,7 +17,7 @@ const groundSchema = new Schema({
         type: { type: String, enum: ['Point'], required: true, default: 'Point' },
         coordinates: { type: [Number], required: true },
     },
-    
+
     city: { //
         type: String,
     },
@@ -100,13 +100,12 @@ const groundSchema = new Schema({
         enum: ['active', 'inactive'],
         default: 'active'
     },
-    gameTypeId: [{ //--
+    gameTypeId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameType' }],
+    gameFeaturesId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameFeatures' }],
+
+    userId: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'GameType',
-    }],
-    gameFeaturesId: [{ //--
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'GameFeatures',
+        ref: 'User',
     }],
 
 }, { timestamps: true });

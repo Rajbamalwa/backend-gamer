@@ -1,7 +1,10 @@
-import mongoose, {Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const gameTypeSchema = new Schema({
     name: {
+        type: String,
+    },
+    description: {
         type: String,
     },
     image: {
