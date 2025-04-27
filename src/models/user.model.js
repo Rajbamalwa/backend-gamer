@@ -10,14 +10,19 @@ const userSchema = new Schema(
         //     required: true
 
         // },
-        email : {
+        email: {
             type: String,
             required: true
         },
-        isOwner: {
-            type: Boolean,
-            // enum: ['user', 'owner'], 
-            default: false,
+        // isOwner: {
+        //     type: Boolean,
+        //     // enum: ['user', 'owner'], 
+        //     default: false,
+        // }
+        role: {
+            type: String,
+            enum: ['user', 'owner'],
+            default: 'user',
         }
     },
     {

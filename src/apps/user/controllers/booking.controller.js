@@ -45,6 +45,7 @@ export const checkBookingStatus = asyncHandler(async (req, res) => {
 
     }
 })
+
 export const getBooking = asyncHandler(async (req, res) => {
     const { groundId, date } = req.query;
 

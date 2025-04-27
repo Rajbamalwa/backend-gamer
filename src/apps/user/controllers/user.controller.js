@@ -24,74 +24,75 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 
-export const loginUser = asyncHandler(async (req, res) => {
-    const { email, isOwner } = req.body; 
+// export const loginUser = asyncHandler(async (req, res) => {
 
-    try {
-        // Validate input
-        if (!email) {
-            return res.status(400).json(new ApiResponse(400, '', 'Email is required'));
-        }
+//     const { email, isOwner } = req.body; 
 
-        // Check if the user already exists
-        let user = await User.findOne({ email, isOwner: isOwner || false });
-        if (!user) {
-            // If the user does not exist, create a new user
-            user = await User.create({ email, isOwner: isOwner || false });
-        }
+//     try {
+//         // Validate input
+//         if (!email) {
+//             return res.status(400).json(new ApiResponse(400, '', 'Email is required'));
+//         }
 
-        // If the user is an owner, handle owner-specific logic
-        if (isOwner) {
-            const groundDetails = await GroundOwnerDetails.findOne({ email });
-            if (!groundDetails) {
-                return res
-                    .status(404)
-                    .json(new ApiResponse(404, '', 'Ground owner details not found'));
-            }
-            if (!groundDetails.isVerified) {
-                return res
-                    .status(400)
-                    .json(new ApiResponse(400, '', 'User is not verified as an owner'));
-            }
+//         // Check if the user already exists
+//         let user = await User.findOne({ email, isOwner: isOwner || false });
+//         if (!user) {
+//             // If the user does not exist, create a new user
+//             user = await User.create({ email, isOwner: isOwner || false });
+//         }
 
-            // Link user to ground owner details if not already linked
-            if (!groundDetails.userId) {
-                await GroundOwnerDetails.findByIdAndUpdate(
-                    groundDetails._id,
-                    { userId: user._id },
-                    { new: true }
-                );
-            }
-        }
+//         // If the user is an owner, handle owner-specific logic
+//         if (isOwner) {
+//             const groundDetails = await GroundOwnerDetails.findOne({ email });
+//             if (!groundDetails) {
+//                 return res
+//                     .status(404)
+//                     .json(new ApiResponse(404, '', 'Ground owner details not found'));
+//             }
+//             if (!groundDetails.isVerified) {
+//                 return res
+//                     .status(400)
+//                     .json(new ApiResponse(400, '', 'User is not verified as an owner'));
+//             }
 
-        // Generate tokens
-        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+//             // Link user to ground owner details if not already linked
+//             if (!groundDetails.userId) {
+//                 await GroundOwnerDetails.findByIdAndUpdate(
+//                     groundDetails._id,
+//                     { userId: user._id },
+//                     { new: true }
+//                 );
+//             }
+//         }
+
+//         // Generate tokens
+//         const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
 
 
-        // Set cookie options
-        const options = {
-            httpOnly: true,
-            secure: true, 
-            sameSite: 'strict',
-        };
+//         // Set cookie options
+//         const options = {
+//             httpOnly: true,
+//             secure: true, 
+//             sameSite: 'strict',
+//         };
 
-        // Respond with tokens and user info
-        return res
-            .status(200)
-            .cookie('accessToken', accessToken, options)
-            .cookie('refreshToken', refreshToken, options)
-            .json(
-                new ApiResponse(
-                    200,
-                    { user, accessToken, refreshToken },
-                    'User logged in successfully'
-                )
-            );
-    } catch (error) {
-        console.error('Error in loginUser:', error);
-        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
-    }
-});
+//         // Respond with tokens and user info
+//         return res
+//             .status(200)
+//             .cookie('accessToken', accessToken, options)
+//             .cookie('refreshToken', refreshToken, options)
+//             .json(
+//                 new ApiResponse(
+//                     200,
+//                     { user, accessToken, refreshToken },
+//                     'User logged in successfully'
+//                 )
+//             );
+//     } catch (error) {
+//         console.error('Error in loginUser:', error);
+//         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+//     }
+// });
 
 
 
@@ -168,3 +169,78 @@ export const loginUser = asyncHandler(async (req, res) => {
 //         return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
 //     }
 // });
+
+
+
+
+
+export const loginUser = asyncHandler(async (req, res) => {
+    const { email, role } = req.body; 
+
+    try {
+        // Validate input
+        if (!email) {
+            return res.status(400).json(new ApiResponse(400, '', 'Email is required'));
+        }
+
+        // Default role to 'user' if not provided or invalid
+        const userRole = role === 'owner' ? 'owner' : 'user';
+
+        // Check if the user already exists
+        let user = await User.findOne({ email, role: userRole });
+        if (!user) {
+            // If the user does not exist, create a new user
+            user = await User.create({ email, role: userRole });
+        }
+
+        // If the user is an owner, handle owner-specific logic
+        if (user.role === 'owner') {
+            const groundDetails = await GroundOwnerDetails.findOne({ email });
+            if (!groundDetails) {
+                return res
+                    .status(404)
+                    .json(new ApiResponse(404, '', 'Owner is not verified'));
+            }
+            if (!groundDetails.isVerified) {
+                return res
+                    .status(400)
+                    .json(new ApiResponse(400, '', 'User is not verified as an owner'));
+            }
+
+            // Link user to ground owner details if not already linked
+            if (!groundDetails.userId) {
+                await GroundOwnerDetails.findByIdAndUpdate(
+                    groundDetails._id,
+                    { userId: user._id },
+                    { new: true }
+                );
+            }
+        }
+
+        // Generate tokens
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+        // Set cookie options
+        const options = {
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'strict',
+        };
+
+        // Respond with tokens and user info
+        return res
+            .status(200)
+            .cookie('accessToken', accessToken, options)
+            .cookie('refreshToken', refreshToken, options)
+            .json(
+                new ApiResponse(
+                    200,
+                    { user, accessToken, refreshToken },
+                    'User logged in successfully'
+                )
+            );
+    } catch (error) {
+        console.error('Error in loginUser:', error);
+        return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+    }
+});

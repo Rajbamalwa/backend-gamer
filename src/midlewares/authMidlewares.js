@@ -33,21 +33,31 @@ const isAutheticated = asyncHandler(async (req, res, next) => {
 })
 const isUser = (isUser) => {
     
-    return (req, _, next) => {
+    return (req,res, _, next) => {
         const {isOwner} =  req.user
         console.log(isOwner);
         
         if (isOwner === false && isUser === true) {
            return next();
         }
+        return res.status(401).json(new ApiResponse(401, '', 'Unauthorized: wrong user'));
+
+    };
+};
 
 
-        return new ApiError(401, 'Unauthorized: wrong user');
+const authorizedRole = (...roles) => {
+    return (req, _, next) => {
+        
+        if (!roles.includes(req.user?.userRole || '')) {
+            throw new ApiError(401, "Role is not allowed");
+        }
+        next();
     };
 };
 
 
 
-export { isAutheticated,isUser }
+export { isAutheticated,isUser,authorizedRole }
 
 

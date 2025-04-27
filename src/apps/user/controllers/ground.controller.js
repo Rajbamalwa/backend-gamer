@@ -2,6 +2,10 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Ground } from "../../../models/ground.model.js";
 import { Reviews } from "../../../models/reviews.model.js";
+import { GameType } from '../../../models/gameType.model.js'; 
+import { GameFeatures } from '../../../models/gameFeatures.model.js';
+
+
 import mongoose from "mongoose";
 
 
@@ -35,7 +39,7 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
       },
       {
         $match: {
-          ...(gameType && { 'gameType.name': gameType }),
+          ...(gameType && gameType !== "all" && { 'gameType.name': gameType }),
         },
       },
       {
@@ -151,6 +155,25 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, {groundDetails,groundReviewRating},));
   } catch (error) {
     console.error(error);
+    return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+  }
+});
+
+
+export const createGround = asyncHandler(async (req, res) => {
+
+  const data = req.body
+  const { _id } = req.user;
+
+  try {
+    const newGround = await Ground.create({
+      ...data,
+      userId : _id 
+    });
+    return res.status(200).json(new ApiResponse(200, newGround, 'Ground created successfully!'));
+
+  } catch (error) {
+    console.log(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
   }
 });

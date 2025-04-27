@@ -1,8 +1,8 @@
 import express from 'express';
-// import contactRoutes from './routes/contactUs.routes.js';
+import ownerRoutes from './routes/ownerDetails.routes.js';
 
 const router = express.Router();
 
-// router.use('/conatct', contactRoutes);
+router.use('/owner', ownerRoutes);
 
 export default router;
