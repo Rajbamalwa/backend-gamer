@@ -1,5 +1,5 @@
-import { asyncHandler } from "..//../../utils/asyncHandler.js";
-import { ApiResponse } from "..//../../utils/ApiResponse.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Reviews } from "../../../models/reviews.model.js";
 
 export const createReview = asyncHandler(async (req, res) => {
@@ -34,13 +34,13 @@ export const createReview = asyncHandler(async (req, res) => {
 
 export const getAllReviewsById = asyncHandler(async (req, res) => {
 
-    const {_id} = req.params
+    const {groundId} = req.body
 
     try {
         const { page = 1, limit = 10 } = req.query; 
         const skip = (page - 1) * limit;
 
-        const reviews = await Reviews.find({groundId:_id})
+        const reviews = await Reviews.find({groundId:groundId})
             // .populate('groundId', 'name') 
             // .populate('userId', 'name') 
             .skip(skip)

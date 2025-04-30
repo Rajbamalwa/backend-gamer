@@ -1,11 +1,11 @@
-import { asyncHandler } from "..//../../utils/asyncHandler.js";
-import { ApiResponse } from "..//../../utils/ApiResponse.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Ground } from '../../../models/ground.model.js'
 import mongoose from "mongoose";
 
 export const toggleLikeGround = async (req, res) => {
     try {
-        const { groundId } = req.params;
+        const { groundId } = req.body;
         const { _id } = req.user;
 
         if (!mongoose.Types.ObjectId.isValid(groundId)) {

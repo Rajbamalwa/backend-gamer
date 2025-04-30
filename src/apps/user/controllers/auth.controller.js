@@ -1,6 +1,6 @@
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { User } from '../models/user.model.js';
+import { asyncHandler } from '../../../utils/asyncHandler.js';
+import { ApiResponse } from '../../../utils/ApiResponse.js';
+import { User } from '../../../models/user.model.js';
 import axios from 'axios';
 
 const CLIENT_ID = 'YOUR_CLIENT_ID';

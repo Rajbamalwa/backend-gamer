@@ -115,7 +115,7 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 });
 
 export const getGroundDetails = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
+  const { _id } = req.body;
 
   try {
 
