@@ -6,9 +6,9 @@ import {
 
 const router = Router()
 
-import { isAutheticated,isUser } from "../../../midlewares/authMidlewares.js"
+import { isAutheticated,authorizedRole } from "../../../midlewares/authMidlewares.js"
 
-router.route("/create").post(isAutheticated,createContactUs)
+router.route("/create").post(isAutheticated,authorizedRole('user'),createContactUs)
 
 
 

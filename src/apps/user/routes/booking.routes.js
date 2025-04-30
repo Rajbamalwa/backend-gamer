@@ -10,10 +10,10 @@ import {
 
 const router = Router()
 
-import { isAutheticated,isUser } from "../../../midlewares/authMidlewares.js"
+import { isAutheticated,authorizedRole } from "../../../midlewares/authMidlewares.js"
 
-router.route("/create").post(isAutheticated,isUser(true),createBooking)
-router.route("/").get(isAutheticated,isUser(true),allBooking)
-router.route("/details/:bookingId").get(isAutheticated,isUser(true),bookingDetails)
+router.route("/create").post(isAutheticated,authorizedRole('user'),createBooking)
+router.route("/").get(isAutheticated,authorizedRole('user'),allBooking)
+router.route("/details/:bookingId").get(isAutheticated,authorizedRole('user'),bookingDetails)
 
 export default router

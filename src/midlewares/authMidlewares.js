@@ -47,10 +47,11 @@ const isUser = (isUser) => {
 
 
 const authorizedRole = (...roles) => {
-    return (req, _, next) => {
+    return (req, res, next) => {
         
-        if (!roles.includes(req.user?.userRole || '')) {
-            throw new ApiError(401, "Role is not allowed");
+        if (!roles.includes(req.user?.role || '')) {
+            return res.status(401).json(new ApiResponse(401, '', 'role is not allowed'));
+
         }
         next();
     };

@@ -7,8 +7,10 @@ import {
 
 
 const router = Router()
+import { isAutheticated,authorizedRole } from "../../../midlewares/authMidlewares.js"
 
-router.route("/").get(getAllGameTypes)
+
+router.route("/").get(isAutheticated,authorizedRole('user'),getAllGameTypes)
 
 
 export default router
