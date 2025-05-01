@@ -78,7 +78,7 @@ export const getBooking = asyncHandler(async (req, res) => {
 // user bookig list
 export const allBooking = asyncHandler(async (req, res) => {
     try {
-        let { page, pageSize,date } = req.query;
+        let { page, pageSize,date } = req.body;
 
         page = parseInt(page) || 1; // Default to page 1 if not provided
         pageSize = parseInt(pageSize) || 10; // Default to pageSize 10 if not provided
@@ -115,7 +115,7 @@ export const allBooking = asyncHandler(async (req, res) => {
  
 
 export const bookingDetails = asyncHandler(async (req, res) => {
-    const { bookingId } = req.params; 
+    const { bookingId } = req.body; 
 
     try {
         const booking = await Booking.findById(bookingId).populate('groundId'); 
@@ -132,14 +132,3 @@ export const bookingDetails = asyncHandler(async (req, res) => {
     }
 });
 
-
-export const groundOwnerBookig = asyncHandler(async(req,res)=>{
-    const {groundId} = req.parmss
-    try {
-
-        // const 
-        
-    } catch (error) {
-        
-    }
-})
