@@ -22,7 +22,7 @@ const bookingSchema = new Schema({
         ref: 'GameType',
     },
     date: {
-        type: String,
+        type: Date,
     },
     schedulingTime: {
         type: [schedulingTimeSchema],

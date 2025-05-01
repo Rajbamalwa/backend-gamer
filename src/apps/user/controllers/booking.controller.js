@@ -2,6 +2,8 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Booking } from "../../../models/booking.model.js";
 import mongoose from "mongoose";
+import moment from 'moment';
+
 
 export const createBooking = asyncHandler(async (req, res) => {
     try {
@@ -24,8 +26,10 @@ export const createBooking = asyncHandler(async (req, res) => {
         if (!schedulingTime || !Array.isArray(schedulingTime) || schedulingTime.length === 0) {
             return res.status(400).json(new ApiResponse(400, '', 'At least one scheduling time is required'));
         }
+        const parsedDate = moment(date, 'DD/MM/YYYY').toDate();
 
-        const newBooking = await Booking.create({ gameTypeId, date, schedulingTime, groundId, userId: _id });
+
+        const newBooking = await Booking.create({ gameTypeId, date: parsedDate, schedulingTime, groundId, userId: _id });
 
         return res.status(200).json(new ApiResponse(200, newBooking, 'Booking created successfully!'));
     } catch (error) {
@@ -110,12 +114,23 @@ export const bookingDetails = asyncHandler(async (req, res) => {
 
 export const getBooking = asyncHandler(async (req, res) => {
     const { groundId, date } = req.body;
+    const parsedDate = moment(date, 'DD/MM/YYYY');
+    const startOfDay = parsedDate.startOf('day').toDate();
+    const endOfDay = parsedDate.endOf('day').toDate();
 
     try {
-        const allBookings = await Booking.find({ groundId });
+        // Query using $gte and $lte
+        const allBookings = await Booking.find({
+            groundId,
+            date: { $gte: startOfDay, $lte: endOfDay }
+        });
+        
+        if (allBookings.length === 0) {
+            return res.status(404).json(new ApiResponse(404, '', "No Data found"));
+        }
 
         const flatSchedulingSlots = [];
-        
+
         allBookings.forEach(booking => {
             if (booking.schedulingTime && Array.isArray(booking.schedulingTime)) {
                 booking.schedulingTime.forEach(slot => {
@@ -131,11 +146,11 @@ export const getBooking = asyncHandler(async (req, res) => {
                 });
             }
         });
-        
+
         return res.status(200).json(
-            new ApiResponse(200,{ schedulingTime : flatSchedulingSlots}, "Success")
+            new ApiResponse(200, { schedulingTime: flatSchedulingSlots }, "Success")
         );
-        
+
 
 
     } catch (error) {
