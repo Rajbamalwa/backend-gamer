@@ -68,8 +68,10 @@ export const allBooking = asyncHandler(async (req, res) => {
         const booking = await Booking.find(filter)
             .skip(skip)
             .limit(pageSize)
-            // .sort({ _id: 1 })
-            .select("schedulingTime"); // Select only the schedulingTime field
+            .sort({ date: -1 })
+            .select("schedulingTime bookingStatus date")
+            .populate({ path: 'gameTypeId', select: 'name' })
+            .populate({ path: 'groundId', select: 'name description' });
 
         const totalBooking = await Booking.countDocuments();
         const totalPages = Math.ceil(totalBooking / pageSize);
@@ -124,7 +126,7 @@ export const getBooking = asyncHandler(async (req, res) => {
             groundId,
             date: { $gte: startOfDay, $lte: endOfDay }
         });
-        
+
         if (allBookings.length === 0) {
             return res.status(404).json(new ApiResponse(404, '', "No Data found"));
         }

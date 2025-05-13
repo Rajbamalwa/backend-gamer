@@ -34,6 +34,11 @@ const bookingSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+    },
+    bookingStatus: {
+        type: String,
+        enum: ['Pending', 'Booked'],
+        default: 'Pending'
     }
 }, { timestamps: true });
 
