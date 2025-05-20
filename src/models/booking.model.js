@@ -37,8 +37,35 @@ const bookingSchema = new Schema({
     },
     bookingStatus: {
         type: String,
-        enum: ['Pending', 'Booked'],
+        enum: ['Pending', 'Booked', 'Bidding Refund Initiated'],
         default: 'Pending'
+    },
+    transactionId: {
+        type: String,
+        default: null,
+    },
+    isBiding: {
+        type: Boolean,
+        default: false,
+    },
+    slotCost: {
+        type: Number,
+        default: 0
+    },
+    bidingCost: {
+        type: Number,
+        default: 0
+
+    },
+    serviceFee: {
+        type: Number,
+        default: 0
+
+    },
+    payableAmount: {
+        type: Number,
+        default: 0
+
     }
 }, { timestamps: true });
 

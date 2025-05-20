@@ -9,6 +9,7 @@ import notificationsRoute from './routes/notification.routes.js'
 import reviewRoute from './routes/reviews.routes.js'
 import gameTypeRoute from './routes/gameType.routes.js'
 import contactUsRoute from './routes/contactUs.routes.js'
+import phonepeRoutes from './routes/payment.routes.js'
 
 const router = express.Router();
 
@@ -22,5 +23,6 @@ router.use('/notification', notificationsRoute)
 router.use('/reviews', reviewRoute)
 router.use('/game-type', gameTypeRoute)
 router.use('/contact-us', contactUsRoute)
+router.use('/payment', phonepeRoutes)
 
 export default router;

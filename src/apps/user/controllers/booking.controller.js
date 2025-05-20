@@ -1,35 +1,68 @@
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Booking } from "../../../models/booking.model.js";
-import mongoose from "mongoose";
+import { Reviews } from "../../../models/reviews.model.js";
 import moment from 'moment';
 
 
 export const createBooking = asyncHandler(async (req, res) => {
+
+    /// checking if booking is a avaliable than store isBiding ture and previous booking refuncd incitive 
     try {
-        const { gameTypeId, date, schedulingTime, groundId } = req.body;
+        const { gameTypeId, date, schedulingTime, groundId, slotCost, serviceFee, payableAmount } = req.body;
         const { _id } = req.user
-        console.log(_id);
 
-
-        if (!gameTypeId) {
-            return res.status(400).json(new ApiResponse(400, '', 'Ground ID is required'));
+        if (!gameTypeId || !date || !groundId || !schedulingTime?.length) {
+            return res.status(400).json(new ApiResponse(400, '', 'Required fields missing'));
         }
 
-        if (!date) {
-            return res.status(400).json(new ApiResponse(400, '', 'Date is required'));
-        }
-        if (!groundId) {
-            return res.status(400).json(new ApiResponse(400, '', 'groundId is required'));
+        const parsedDate = moment(date, 'DD/MM/YYYY').startOf('day').toDate();
+        // 1. Find the latest booking with a bidingCost (for this ground and date)
+        const lastBooking = await Booking.findOne({
+            groundId,
+            date: parsedDate,
+        }).sort({ createdAt: -1 });
+
+        let isBiding = false;
+        let bidingCost = 0; // default starting
+
+        if (lastBooking) {
+            bidingCost = (lastBooking.bidingCost || 0) + 100;
         }
 
-        if (!schedulingTime || !Array.isArray(schedulingTime) || schedulingTime.length === 0) {
-            return res.status(400).json(new ApiResponse(400, '', 'At least one scheduling time is required'));
+        // 1. Find conflicting bookings
+        const existingBooking = await Booking.findOne({
+            groundId,
+            date: parsedDate,
+            "schedulingTime.id": { $in: schedulingTime.map(st => st.id) },
+        });
+
+
+        // 2. If conflict found, mark new booking as biding and update old one
+        if (existingBooking) {
+            isBiding = true;
+            // Update old booking status
+            await Booking.findByIdAndUpdate(existingBooking._id, {
+                bookingStatus: 'Bidding Refund Initiated'
+            });
         }
-        const parsedDate = moment(date, 'DD/MM/YYYY').toDate();
 
+        // 3. Create new booking with or without bidding info
+        const newBooking = await Booking.create({
+            gameTypeId,
+            date: parsedDate,
+            schedulingTime,
+            groundId,
+            userId: _id,
+            isBiding,
+            bidingCost,
+            slotCost,
+            serviceFee,
+            payableAmount: slotCost + serviceFee + bidingCost,
+            // bookingStatus: isBiding ? 'Pending' : 'Booked',
+            bookingStatus: 'Pending',
+        });
 
-        const newBooking = await Booking.create({ gameTypeId, date: parsedDate, schedulingTime, groundId, userId: _id });
 
         return res.status(200).json(new ApiResponse(200, newBooking, 'Booking created successfully!'));
     } catch (error) {
@@ -69,7 +102,7 @@ export const allBooking = asyncHandler(async (req, res) => {
             .skip(skip)
             .limit(pageSize)
             .sort({ date: -1 })
-            .select("schedulingTime bookingStatus date")
+            .select("schedulingTime bookingStatus date transactionId")
             .populate({ path: 'gameTypeId', select: 'name' })
             .populate({ path: 'groundId', select: 'name description' });
 
@@ -77,7 +110,7 @@ export const allBooking = asyncHandler(async (req, res) => {
         const totalPages = Math.ceil(totalBooking / pageSize);
 
         if (page > totalPages) {
-            return res.status(400).json(new ApiResponse(400, '', "Page doesn't exist"));
+            return res.status(400).json(new ApiResponse(400, '', "No data found"));
         }
 
         if (booking.length > 0) {
@@ -97,15 +130,30 @@ export const allBooking = asyncHandler(async (req, res) => {
 
 export const bookingDetails = asyncHandler(async (req, res) => {
     const { bookingId } = req.body;
+    const { _id } = req.user
+
 
     try {
-        const booking = await Booking.findById(bookingId).populate('groundId');
+        const booking = await Booking.findById(bookingId).select("schedulingTime bookingStatus date transactionId userId")
+            .populate({ path: 'gameTypeId', select: 'name' })
+            .populate({ path: 'groundId', select: 'name description refundPolicy cancelPolicy' });
 
         if (!booking) {
             return res.status(400).json(new ApiResponse(400, null, 'Booking not found'));
         }
 
-        return res.status(200).json(new ApiResponse(200, booking, 'Ground details fetched successfully'));
+        const reviews = await Reviews.findOne({ groundId: booking.groundId._id, userId: _id }).select('title rating')
+
+        // Convert Mongoose doc to plain object before modifying
+        const bookingObj = booking.toObject();
+        bookingObj.reviews = !!reviews; // true if found, false if not
+
+
+        if (!booking) {
+            return res.status(400).json(new ApiResponse(400, null, 'Booking not found'));
+        }
+
+        return res.status(200).json(new ApiResponse(200, { bookingObj, reviews }, 'Ground details fetched successfully'));
 
     } catch (error) {
         console.error(error);
