@@ -23,6 +23,10 @@ const userSchema = new Schema(
             type: String,
             enum: ['user', 'owner'],
             default: 'user',
+        },
+        profileCompleted: {
+            type: Boolean,
+            default: false
         }
     },
     {
