@@ -2,7 +2,7 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Ground } from "../../../models/ground.model.js";
 import { Reviews } from "../../../models/reviews.model.js";
-import { GameType } from '../../../models/gameType.model.js'; 
+import { GameType } from '../../../models/gameType.model.js';
 import { GameFeatures } from '../../../models/gameFeatures.model.js';
 
 
@@ -10,10 +10,10 @@ import mongoose from "mongoose";
 
 
 export const getAllGrounds = asyncHandler(async (req, res) => {
-  const { gameType,lat,lng } = req.body;
+  const { gameType, lat, lng } = req.body;
   const { _id } = req.user
-  
-  
+
+
   try {
     const groundList = await Ground.aggregate([
       // {
@@ -53,10 +53,10 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
       {
         $unwind: {
           path: '$gameFeatures',
-          preserveNullAndEmptyArrays: true, 
+          preserveNullAndEmptyArrays: true,
         },
       },
-      
+
       {
         $project: {
           name: 1,
@@ -115,29 +115,31 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 });
 
 export const getGroundDetails = asyncHandler(async (req, res) => {
-  const { _id } = req.body;
+  const { _id: groundId } = req.body;
+  const { _id: userId } = req.user;
+
 
   try {
 
     const groundReviewRating = await Reviews.aggregate([
-      { $match: { groundId: new mongoose.Types.ObjectId(_id) } },
+      { $match: { groundId: new mongoose.Types.ObjectId(groundId) } },
       {
         $group: {
           _id: "$groundId",
           averageRating: { $avg: "$rating" },
-          totalReviews: { $sum: 1 }, 
+          totalReviews: { $sum: 1 },
         },
       },
       {
-        $project : {
-          _id : 0,
-          averageRating : 1,
-          totalReviews : 1
+        $project: {
+          _id: 0,
+          averageRating: 1,
+          totalReviews: 1
         }
       }
     ]).then(res => res.at(0) || { averageRating: 0, totalReviews: 0 });
 
-    const groundDetails = await Ground.findById(_id)
+    const groundDetails = await Ground.findById(groundId)
       .populate({
         path: 'gameTypeId',
         select: 'name description',
@@ -145,14 +147,21 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
       .populate({
         path: 'gameFeaturesId',
         select: 'name description',
-      })
+      }).lean()
     // .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId image'); 
 
     if (!groundDetails) {
       return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
     }
 
-    return res.status(200).json(new ApiResponse(200, {groundDetails,groundReviewRating},));
+    const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
+    const neObje = {
+      ...groundDetails,
+      isLike
+    }
+
+
+    return res.status(200).json(new ApiResponse(200, { groundDetails :neObje , groundReviewRating },));
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
@@ -168,7 +177,7 @@ export const createGround = asyncHandler(async (req, res) => {
   try {
     const newGround = await Ground.create({
       ...data,
-      userId : _id 
+      userId: _id
     });
     return res.status(200).json(new ApiResponse(200, newGround, 'Ground created successfully!'));
 
