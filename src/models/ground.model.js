@@ -103,10 +103,14 @@ const groundSchema = new Schema({
     gameTypeId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameType' }],
     gameFeaturesId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GameFeatures' }],
 
-    userId: [{
+    // userId: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+    // }],
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-    }],
+    },
 
 }, { timestamps: true });
 groundSchema.index({ location: "2dsphere" });

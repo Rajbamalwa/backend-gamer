@@ -1,7 +1,10 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { Ground } from "../models/ground.model.js";
-import { Reviews } from "../models/reviews.model.js";
+import { asyncHandler } from "../../../utils/asyncHandler.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { Ground } from "../../../models/ground.model.js";
+import { Reviews } from "../../../models/reviews.model.js";
+import { GameType } from '../../../models/gameType.model.js';
+import { GameFeatures } from '../../../models/gameFeatures.model.js';
+import { User } from '../../../models/user.model.js';
 import mongoose from "mongoose";
 
 export const createGround = asyncHandler(async (req, res) => {
@@ -10,9 +13,16 @@ export const createGround = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 
   try {
+
+    const isUser = await User.findById(_id)
+    if (!isUser) {
+      return res.status(404).json(new ApiResponse(404, '', 'User not found'));
+
+    }
+
     const newGround = await Ground.create({
       ...data,
-      userId : _id 
+      userId: _id
     });
     return res.status(200).json(new ApiResponse(200, newGround, 'Ground created successfully!'));
 
@@ -23,10 +33,10 @@ export const createGround = asyncHandler(async (req, res) => {
 });
 
 export const getAllGrounds = asyncHandler(async (req, res) => {
-  const { gameType,lat,lng } = req.query;
+  const { gameType, lat, lng } = req.query;
   const { _id } = req.user
-  
-  
+
+
   try {
     const groundList = await Ground.aggregate([
       // {
@@ -66,10 +76,10 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
       {
         $unwind: {
           path: '$gameFeatures',
-          preserveNullAndEmptyArrays: true, 
+          preserveNullAndEmptyArrays: true,
         },
       },
-      
+
       {
         $project: {
           name: 1,
@@ -138,14 +148,14 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
         $group: {
           _id: "$groundId",
           averageRating: { $avg: "$rating" },
-          totalReviews: { $sum: 1 }, 
+          totalReviews: { $sum: 1 },
         },
       },
       {
-        $project : {
-          _id : 0,
-          averageRating : 1,
-          totalReviews : 1
+        $project: {
+          _id: 0,
+          averageRating: 1,
+          totalReviews: 1
         }
       }
     ]).then(res => res.at(0) || { averageRating: 0, totalReviews: 0 });
@@ -165,7 +175,7 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
       return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
     }
 
-    return res.status(200).json(new ApiResponse(200, {groundDetails,groundReviewRating},));
+    return res.status(200).json(new ApiResponse(200, { groundDetails, groundReviewRating },));
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
@@ -223,14 +233,14 @@ export const groundDelete = asyncHandler(async (req, res) => {
 
 })
 
-export const ownerGround = asyncHandler(async(req,res)=>{
+export const ownerGround = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 
   try {
 
     // const allGroundOwner = await 
-    
+
   } catch (error) {
-    
+
   }
 })
