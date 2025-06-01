@@ -237,10 +237,19 @@ export const ownerGround = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 
   try {
+    const allGroundsByOwner = await Ground.find({ userId: _id })
+      .populate('gameTypeId', 'name')         // populate game type name
+      .populate('gameFeaturesId', 'name')     // populate game feature name
+      .select('-__v')                         // optional: exclude __v field
+      .sort({ createdAt: -1 });               // optional: newest first
 
-    // const allGroundOwner = await 
+    if (!allGroundsByOwner.length) {
+      return res.status(404).json(new ApiResponse(404, [], "No Grounds Found for this User"));
+    }
 
+    return res.status(200).json(new ApiResponse(200, allGroundsByOwner, "Grounds retrieved successfully"));
   } catch (error) {
-
+    console.error(error);
+    return res.status(500).json(new ApiResponse(500, null, "Server Error"));
   }
-})
+});

@@ -12,7 +12,7 @@ const groundSchema = new Schema({
     },
     lng: { //
         type: Number,
-    },
+    },  
     location: {
         type: { type: String, enum: ['Point'], required: true, default: 'Point' },
         coordinates: { type: [Number], required: true },

@@ -15,6 +15,7 @@ const router = Router()
 import { isAutheticated,authorizedRole } from "../../../midlewares/authMidlewares.js"
 
 router.route("/create").post(isAutheticated,createGround)
+router.route("/list").get(isAutheticated,ownerGround)
 // router.route("/list").get(isAutheticated,getAllGrounds)
 // router.route("/details/:_id").get(isAutheticated,getGroundDetails)
 // router.route("/update/:_id").post(isAutheticated,groundUpdate)
