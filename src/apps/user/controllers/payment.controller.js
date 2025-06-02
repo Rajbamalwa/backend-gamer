@@ -1,9 +1,11 @@
 import { Booking } from "../../../models/booking.model.js";
-
+import { Ground } from "../../../models/ground.model.js";
+import { Reviews } from "../../../models/reviews.model.js";
 import axios from 'axios';
 import crypto from 'crypto';
 import paymentQueue from '../queues/payment/index.js'; // or whatever your actual file is
 import { ApiResponse } from "../../../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
 
 export const initiatePhonePePayment = async (req, res) => {
@@ -114,3 +116,64 @@ export const paymentStatus = async (req, res) => {
   res.send("Payment Success");
 }
 
+
+
+export const paymentSummary = async (req, res) => {
+  const { bookingId } = req.body;
+  const { _id: userId } = req.user;
+
+
+  try {
+
+    const booking = await Booking.findById(bookingId)
+    if (!booking) {
+      return res.status(404).json(new ApiResponse(404, '', 'No Booking found'));
+
+    }
+
+    const groundReviewRating = await Reviews.aggregate([
+      { $match: { groundId: new mongoose.Types.ObjectId(booking.groundId) } },
+      {
+        $group: {
+          _id: "$groundId",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          averageRating: 1,
+          totalReviews: 1
+        }
+      }
+    ]).then(res => res.at(0) || { averageRating: 0, totalReviews: 0 });
+
+    const groundDetails = await Ground.findById(booking.groundId)
+      .populate({
+        path: 'gameTypeId',
+        select: 'name description',
+      })
+      .populate({
+        path: 'gameFeaturesId',
+        select: 'name description',
+      }).lean()
+    // .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId image'); 
+
+    if (!groundDetails) {
+      return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
+    }
+
+    const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
+    const neObje = {
+      ...groundDetails,
+      isLike
+    }
+
+
+    return res.status(200).json(new ApiResponse(200, { groundDetails: neObje, groundReviewRating },));
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
+  }
+}
