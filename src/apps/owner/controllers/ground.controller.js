@@ -247,7 +247,13 @@ export const ownerGround = asyncHandler(async (req, res) => {
       return res.status(404).json(new ApiResponse(404, [], "No Grounds Found for this User"));
     }
 
-    return res.status(200).json(new ApiResponse(200, allGroundsByOwner, "Grounds retrieved successfully"));
+    const enrichedGrounds = allGroundsByOwner.map(ground => {
+      const groundObj = ground.toObject(); 
+      groundObj.likesCount = ground.likedBy.length;
+      return groundObj;
+    });
+
+    return res.status(200).json(new ApiResponse(200, enrichedGrounds, "Grounds retrieved successfully"));
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, null, "Server Error"));

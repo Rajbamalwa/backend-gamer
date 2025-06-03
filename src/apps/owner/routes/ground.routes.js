@@ -16,9 +16,9 @@ import { isAutheticated,authorizedRole } from "../../../midlewares/authMidleware
 
 router.route("/create").post(isAutheticated,createGround)
 router.route("/list").get(isAutheticated,ownerGround)
-// router.route("/details/:_id").get(isAutheticated,getGroundDetails)
-// router.route("/update/:_id").post(isAutheticated,groundUpdate)
-// router.route("/delete/:_id").post(isAutheticated,groundDelete)
+router.route("/details/:_id").get(isAutheticated,getGroundDetails)
+router.route("/update/:_id").post(isAutheticated,groundUpdate)
+router.route("/delete/:_id").post(isAutheticated,groundDelete)
 // router.route("/list-owner").post(isAutheticated,isUser(false),ownerGround)
 
 
