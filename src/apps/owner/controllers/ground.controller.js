@@ -138,12 +138,12 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 });
 
 export const getGroundDetails = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
+  const { groundId } = req.body;
 
   try {
 
     const groundReviewRating = await Reviews.aggregate([
-      { $match: { groundId: new mongoose.Types.ObjectId(_id) } },
+      { $match: { groundId: new mongoose.Types.ObjectId(groundId) } },
       {
         $group: {
           _id: "$groundId",
@@ -160,7 +160,7 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
       }
     ]).then(res => res.at(0) || { averageRating: 0, totalReviews: 0 });
 
-    const groundDetails = await Ground.findById(_id)
+    const groundDetails = await Ground.findById(groundId)
       .populate({
         path: 'gameTypeId',
         select: 'name description',
@@ -185,12 +185,11 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
 
 export const groundUpdate = asyncHandler(async (req, res) => {
 
-  const { _id } = req.params;
-  const { updateField, updatedValue } = req.body
+  const {gorundId, updateField, updatedValue } = req.body
 
   try {
 
-    const ground = await Ground.findById(_id)
+    const ground = await Ground.findById(gorundId)
     if (!ground) {
       return res.status(404).json(new ApiResponse(404, '', 'No data found'));
     }
@@ -213,15 +212,15 @@ export const groundUpdate = asyncHandler(async (req, res) => {
 })
 
 export const groundDelete = asyncHandler(async (req, res) => {
-  const { _id } = req.params;
+  const { gorundId } = req.body;
 
   try {
 
-    const ground = await Ground.findById(_id)
+    const ground = await Ground.findById(gorundId)
     if (!ground) {
       return res.status(404).json(new ApiResponse(404, '', 'No data found'));
     }
-    await Ground.findByIdAndDelete(_id)
+    await Ground.findByIdAndDelete(gorundId)
     return res.status(200).json(new ApiResponse(200, '', 'Delete successfully'));
 
 

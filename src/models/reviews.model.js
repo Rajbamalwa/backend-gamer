@@ -15,6 +15,10 @@ const reviewsSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    profileId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserDetails',
+    }
 }, { timestamps: true });
 
 export const Reviews = mongoose.model("Reviews", reviewsSchema);

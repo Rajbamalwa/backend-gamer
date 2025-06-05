@@ -167,7 +167,9 @@ export const paymentSummary = async (req, res) => {
     const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
     const neObje = {
       ...groundDetails,
-      isLike
+      isLike,
+      bookingDate: booking.date, // <- add booking date
+
     }
 
 
