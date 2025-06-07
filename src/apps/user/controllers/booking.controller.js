@@ -187,7 +187,7 @@ export const getBooking = asyncHandler(async (req, res) => {
             if (booking.schedulingTime && Array.isArray(booking.schedulingTime)) {
                 booking.schedulingTime.forEach(slot => {
                     flatSchedulingSlots.push({
-                        ...slot.toObject(),
+                        ...slot.toObject(),  
                         bookingId:booking._id,
                         isBidding: true,
                         groundId: booking.groundId,

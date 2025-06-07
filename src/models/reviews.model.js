@@ -11,11 +11,15 @@ const reviewsSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Ground',
     },
+    bookingId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking',
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    profileId:{
+    profileId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserDetails',
     }

@@ -5,12 +5,12 @@ import { UserDetails } from "../../../models/userDetails.model.js";
 
 export const createReview = asyncHandler(async (req, res) => {
 
-    const { title, rating, groundId } = req.body;
+    const { title, rating, groundId,bookingId } = req.body;
     const userId = req.user
 
     try {
 
-        if (!title || !rating || !groundId) {
+        if (!title || !rating || !groundId || !bookingId) {
             return res.status(400).json(new ApiResponse(400, '', 'All fields (title, rating, groundId, userId) are required'));
         }
 
@@ -27,6 +27,7 @@ export const createReview = asyncHandler(async (req, res) => {
             rating,
             groundId,
             userId,
+            bookingId,
             profileId: userDetails._id,
 
         });
