@@ -178,6 +178,8 @@ export const getBooking = asyncHandler(async (req, res) => {
         if (allBookings.length === 0) {
             return res.status(404).json(new ApiResponse(404, '', "No Data found"));
         }
+        // console.log("te" ,allBookings);
+        
 
         const flatSchedulingSlots = [];
 
@@ -186,6 +188,7 @@ export const getBooking = asyncHandler(async (req, res) => {
                 booking.schedulingTime.forEach(slot => {
                     flatSchedulingSlots.push({
                         ...slot.toObject(),
+                        bookingId:booking._id,
                         isBidding: true,
                         groundId: booking.groundId,
                         userId: booking.userId,
