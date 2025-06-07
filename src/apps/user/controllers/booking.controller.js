@@ -102,9 +102,9 @@ export const allBooking = asyncHandler(async (req, res) => {
             .skip(skip)
             .limit(pageSize)
             .sort({ date: -1 })
-            .select("schedulingTime bookingStatus date transactionId")
-            .populate({ path: 'gameTypeId', select: 'name' })
-            .populate({ path: 'groundId', select: 'name description' });
+            // .select("schedulingTime bookingStatus date transactionId")
+            .populate({ path: 'gameTypeId'})
+            .populate({ path: 'groundId' });
 
         const totalBooking = await Booking.countDocuments();
         const totalPages = Math.ceil(totalBooking / pageSize);
@@ -134,9 +134,9 @@ export const bookingDetails = asyncHandler(async (req, res) => {
 
 
     try {
-        const booking = await Booking.findById(bookingId).select("schedulingTime bookingStatus date transactionId userId")
-            .populate({ path: 'gameTypeId', select: 'name' })
-            .populate({ path: 'groundId', select: 'name description refundPolicy cancelPolicy' });
+        const booking = await Booking.findById(bookingId)
+            .populate({ path: 'gameTypeId' })
+            .populate({ path: 'groundId' });
 
         if (!booking) {
             return res.status(400).json(new ApiResponse(400, null, 'Booking not found'));
