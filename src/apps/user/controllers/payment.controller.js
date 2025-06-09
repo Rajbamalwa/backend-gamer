@@ -164,15 +164,18 @@ export const paymentSummary = async (req, res) => {
       return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
     }
 
+    //ds
     const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
     const neObje = {
       ...groundDetails,
-      isLike,
+      booking : {
+        isLike,
       bookingDate: booking.date,
       bookingStatus: booking.bookingStatus,
       bidingCost: booking.bidingCost,
       slotCost: booking.slotCost,
       payableAmount: booking.payableAmount,
+      }
       // <- add booking date
 
     }
