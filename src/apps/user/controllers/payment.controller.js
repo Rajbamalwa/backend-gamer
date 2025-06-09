@@ -176,9 +176,12 @@ export const paymentSummary = async (req, res) => {
         slotCost: booking.slotCost,
         payableAmount: booking.payableAmount,
         serviceCost : booking.slotCost * 0.04,
+                totalSlot : booking.schedulingTime.length
+
       },
       schedulingTime : {
         schedulingTime : booking.schedulingTime
+
 
       }
       // <- add booking date
