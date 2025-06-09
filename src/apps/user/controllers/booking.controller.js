@@ -169,11 +169,10 @@ export const getBooking = asyncHandler(async (req, res) => {
     const endOfDay = parsedDate.endOf('day').toDate();
 
     try {
-        // Query using $gte and $lte
-        const allBookings = await Booking.find({
-            groundId,
-            date: { $gte: startOfDay, $lte: endOfDay }
-        });
+      const allBookings = await Booking.find({
+  groundId: groundId, // or just `groundId` if variable name is the same
+  bookingStatus: 'Booked'
+});
 
         if (allBookings.length === 0) {
             return res.status(404).json(new ApiResponse(404, '', "No Data found"));
