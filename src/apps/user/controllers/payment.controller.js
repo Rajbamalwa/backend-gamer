@@ -168,13 +168,14 @@ export const paymentSummary = async (req, res) => {
     const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
     const neObje = {
       ...groundDetails,
-      booking : {
+      booking: {
         isLike,
-      bookingDate: booking.date,
-      bookingStatus: booking.bookingStatus,
-      bidingCost: booking.bidingCost,
-      slotCost: booking.slotCost,
-      payableAmount: booking.payableAmount,
+        bookingDate: booking.date,
+        bookingStatus: booking.bookingStatus,
+        bidingCost: booking.bidingCost,
+        slotCost: booking.slotCost,
+        payableAmount: booking.payableAmount,
+        serviceCost : booking.slotCost * 0.04
       }
       // <- add booking date
 
