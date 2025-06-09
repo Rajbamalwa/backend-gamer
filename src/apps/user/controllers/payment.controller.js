@@ -169,18 +169,19 @@ export const paymentSummary = async (req, res) => {
     const neObje = {
       ...groundDetails,
       booking: {
+        bookingId:booking._id
         isLike,
         bookingDate: booking.date,
         bookingStatus: booking.bookingStatus,
         bidingCost: booking.bidingCost,
         slotCost: booking.slotCost,
-        payableAmount: booking.payableAmount,
-        serviceCost : booking.slotCost * 0.04,
-                totalSlot : booking.schedulingTime.length
+        payableAmount: booking.payableAmount,// iisue
+        serviceCost: booking.slotCost * 0.04,
+        totalSlot: booking.schedulingTime.length
 
       },
-      schedulingTime : {
-        schedulingTime : booking.schedulingTime
+      schedulingTime: {
+        schedulingTime: booking.schedulingTime
 
 
       }
