@@ -158,7 +158,7 @@ export const paymentSummary = async (req, res) => {
         path: 'gameFeaturesId',
         select: 'name description',
       }).lean()
-    // .select('bookingStatus equipmentProvide toilet changingRoom parking showers cancelPolicy  refundPolicy gameTypeId gameFeaturesId image'); 
+      .select('bookingStatus name likedBy pricing cancelPolicy  refundPolicy gameTypeId  image');
 
     if (!groundDetails) {
       return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
@@ -168,7 +168,12 @@ export const paymentSummary = async (req, res) => {
     const neObje = {
       ...groundDetails,
       isLike,
-      bookingDate: booking.date, // <- add booking date
+      bookingDate: booking.date,
+      bookingStatus: booking.bookingStatus,
+      bidingCost: booking.bidingCost,
+      slotCost: booking.slotCost,
+      payableAmount: booking.payableAmount,
+      // <- add booking date
 
     }
 
