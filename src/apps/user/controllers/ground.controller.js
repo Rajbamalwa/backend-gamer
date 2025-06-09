@@ -38,6 +38,26 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: 'reviews',
+          localField: '_id',
+          foreignField: 'groundId',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: '$reviews' }, 0] },
+              then: { $avg: '$reviews.rating' },
+              else: 0,
+            },
+          },
+        },
+      },
+
+      {
         $match: {
           ...(gameType && gameType !== "all" && { 'gameType.name': gameType }),
         },
@@ -70,6 +90,8 @@ export const getAllGrounds = asyncHandler(async (req, res) => {
 
           address: 1,
           location: 1,
+          averageRating: 1,
+
           image: {
             $cond: {
               if: { $isArray: '$image' },
@@ -161,7 +183,7 @@ export const getGroundDetails = asyncHandler(async (req, res) => {
     }
 
 
-    return res.status(200).json(new ApiResponse(200, { groundDetails :neObje , groundReviewRating },));
+    return res.status(200).json(new ApiResponse(200, { groundDetails: neObje, groundReviewRating },));
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));

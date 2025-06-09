@@ -103,7 +103,7 @@ export const allBooking = asyncHandler(async (req, res) => {
             .limit(pageSize)
             .sort({ date: -1 })
             // .select("schedulingTime bookingStatus date transactionId")
-            .populate({ path: 'gameTypeId'})
+            .populate({ path: 'gameTypeId' })
             .populate({ path: 'groundId' });
 
         const totalBooking = await Booking.countDocuments();
@@ -169,16 +169,16 @@ export const getBooking = asyncHandler(async (req, res) => {
     const endOfDay = parsedDate.endOf('day').toDate();
 
     try {
-      const allBookings = await Booking.find({
-  groundId: groundId, // or just `groundId` if variable name is the same
-  bookingStatus: 'Booked'
-});
+        const allBookings = await Booking.find({
+            groundId: groundId, // or just `groundId` if variable name is the same
+            bookingStatus: 'Booked'
+        });
 
         if (allBookings.length === 0) {
             return res.status(404).json(new ApiResponse(404, '', "No Data found"));
         }
         // console.log("te" ,allBookings);
-        
+
 
         const flatSchedulingSlots = [];
 
@@ -186,8 +186,8 @@ export const getBooking = asyncHandler(async (req, res) => {
             if (booking.schedulingTime && Array.isArray(booking.schedulingTime)) {
                 booking.schedulingTime.forEach(slot => {
                     flatSchedulingSlots.push({
-                        ...slot.toObject(),  
-                        bookingId:booking._id,
+                        ...slot.toObject(),
+                        bookingId: booking._id,
                         isBidding: true,
                         groundId: booking.groundId,
                         userId: booking.userId,
