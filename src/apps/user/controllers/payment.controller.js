@@ -169,7 +169,7 @@ export const paymentSummary = async (req, res) => {
     const neObje = {
       ...groundDetails,
       booking: {
-        bookingId:booking._id
+        bookingId:booking._id,
         isLike,
         bookingDate: booking.date,
         bookingStatus: booking.bookingStatus,
