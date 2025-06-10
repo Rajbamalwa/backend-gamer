@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gamer-backend-deployment
+  labels:
+    app: gamer-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gamer-backend
+  template:
+    metadata:
+      labels:
+        app: gamer-backend
+    spec:
+      containers:
+        - name: gamer-backend-container
+          image: 093621304676.dkr.ecr.ap-south-1.amazonaws.com/backend-gamer:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "5006"
+            - name: MONGODB_URI
+              value: "mongodb+srv://raj:gamer@gamer.dgkzw.mongodb.net"
+            - name: CORS_ORIGIN
+              value: "*"
+            - name: ACCESS_TOKEN_SECRET
+              value: "kishor-talukdar"
+            - name: ACCESS_TOKEN_EXPIRY
+              value: "30d"
+            - name: REFRESH_TOKEN_SECRET
+              value: "kishor-kumar-talukdar"
+            - name: REFRESH_TOKEN_EXPIRY
+              value: "30d"
+            - name: CLOUDINARY_CLOUD_NAME
+              value: "kishor55"
+            - name: CLOUDINARY_API_KEY
+              value: "623721287558528"
+            - name: CLOUDINARY_API_SECRET
+              value: "JbnuH7uy5hS3ChXepO1ae7Rs7AQ"
+            - name: STRIPE_API_SECRET
+              value: "sk_test_51ORgWvSCyPSuF2SOe6yq71IGGSojdNdNozIybvia0IjJfDLk1ZMcdJk4iBXKwHk89Jc1qxQw7yLbPXFbiufI8mEK00KRWkxyj5"
+            - name: EMAIL_PORT
+              value: "587"
+            - name: MERCHANT_KEY
+              value: "96434309-7796-489d-8924-ab56988a6076"
+            - name: MERCHANT_ID
+              value: "PGTESTPAYUAT86"
+            - name: MERCHANT_BASE_URL
+              value: "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
+            - name: REDIRECT_URL
+              value: "https://1bf3-2401-4900-b354-f3b-c53b-c252-4082-4635.ngrok-free.app/api/v1/user/payment/success"
+            - name: CALLBACK_URL
+              value: "https://1bf3-2401-4900-b354-f3b-c53b-c252-4082-4635.ngrok-free.app/api/v1/user/payment/webhook"
+            - name: KEY_INDEX
+              value: "1"
+      imagePullSecrets:
+        - name: regcred
