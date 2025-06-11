@@ -48,25 +48,25 @@ const bookingSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    slotCost: {
-        type: Number,
-        default: 0
-    },
+    // slotCost: {
+    //     type: Number,
+    //     default: 0
+    // },
     bidingCost: {
         type: Number,
         default: 0
 
     },
-    serviceFee: {
-        type: Number,
-        default: 0
+    // serviceFee: {
+    //     type: Number,
+    //     default: 0
 
-    },
-    payableAmount: {
-        type: Number,
-        default: 0
+    // },
+    // payableAmount: {
+    //     type: Number,
+    //     default: 0
 
-    }
+    // }
 }, { timestamps: true });
 
 export const Booking = mongoose.model("Booking", bookingSchema);
