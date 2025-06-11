@@ -3,6 +3,7 @@ import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { Booking } from "../../../models/booking.model.js";
 import { Reviews } from "../../../models/reviews.model.js";
 import moment from 'moment';
+import { Ground } from "../../../models/ground.model.js";
 
 
 export const createBooking = asyncHandler(async (req, res) => {
@@ -179,8 +180,9 @@ export const getBooking = asyncHandler(async (req, res) => {
         const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
         const endOfDay = new Date(Date.UTC(year, month - 1, day + 1, 0, 0, 0));
 
-        // Log for debugging
-        // console.log("Querying bookings from", startOfDay, "to", endOfDay);
+        const ground = await Ground.findById(groundId)
+        console.log(ground.pricing);
+        
 
         const allBookings = await Booking.find({
             groundId,
@@ -189,7 +191,7 @@ export const getBooking = asyncHandler(async (req, res) => {
                 $gte: startOfDay,
                 $lt: endOfDay
             }
-        });
+        })        
 
         if (!allBookings.length) {
             return res.status(404).json(new ApiResponse(404, '', "No Data found"));
@@ -200,7 +202,7 @@ export const getBooking = asyncHandler(async (req, res) => {
                 ...slot.toObject(),
                 bookingId: booking._id,
                 isBidding: booking.isBiding,
-                groundId: booking.groundId,
+                groundId: booking.groundId._id,
                 userId: booking.userId,
                 createdAt: booking.createdAt,
                 updatedAt: booking.updatedAt,
@@ -209,7 +211,10 @@ export const getBooking = asyncHandler(async (req, res) => {
         );
 
         return res.status(200).json(
-            new ApiResponse(200, { schedulingTime: flatSchedulingSlots }, "Success")
+            new ApiResponse(200, {
+                schedulingTime: flatSchedulingSlots,
+                price  : ground.pricing
+            }, "Success")
         );
 
     } catch (error) {
@@ -221,4 +226,5 @@ export const getBooking = asyncHandler(async (req, res) => {
         });
     }
 });
+
 
