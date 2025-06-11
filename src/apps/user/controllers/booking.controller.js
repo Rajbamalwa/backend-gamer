@@ -164,50 +164,52 @@ export const bookingDetails = asyncHandler(async (req, res) => {
 
 export const getBooking = asyncHandler(async (req, res) => {
     const { groundId, date } = req.body;
-    const parsedDate = moment(date, 'DD/MM/YYYY');
-    const startOfDay = parsedDate.startOf('day').toDate();
-    const endOfDay = parsedDate.endOf('day').toDate();
 
     try {
-        const allBookings = await Booking.find({
-            groundId: groundId, // or just `groundId` if variable name is the same
-            bookingStatus: 'Booked'
-        });
-
-        if (allBookings.length === 0) {
-            return res.status(404).json(new ApiResponse(404, '', "No Data found"));
+        if (!groundId || !date) {
+            return res.status(400).json(new ApiResponse(400, '', "Missing groundId or date"));
         }
-        // console.log("te" ,allBookings);
 
+        // Convert 'dd/mm/yyyy' to JS Date Range
+        const [day, month, year] = date.split('/').map(Number);
+        const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+        const endOfDay = new Date(Date.UTC(year, month - 1, day + 1, 0, 0, 0));
 
-        const flatSchedulingSlots = [];
+        // Log for debugging
+        // console.log("Querying bookings from", startOfDay, "to", endOfDay);
 
-        allBookings.forEach(booking => {
-            if (booking.schedulingTime && Array.isArray(booking.schedulingTime)) {
-                booking.schedulingTime.forEach(slot => {
-                    flatSchedulingSlots.push({
-                        ...slot.toObject(),
-                        bookingId: booking._id,
-                        isBidding: true,
-                        groundId: booking.groundId,
-                        userId: booking.userId,
-                        createdAt: booking.createdAt,
-                        updatedAt: booking.updatedAt,
-                        __v: booking.__v
-                    });
-                });
+        const allBookings = await Booking.find({
+            groundId,
+            bookingStatus: 'Booked',
+            date: {
+                $gte: startOfDay,
+                $lt: endOfDay
             }
         });
+
+        if (!allBookings.length) {
+            return res.status(404).json(new ApiResponse(404, '', "No Data found"));
+        }
+
+        const flatSchedulingSlots = allBookings.flatMap(booking =>
+            booking.schedulingTime.map(slot => ({
+                ...slot.toObject(),
+                bookingId: booking._id,
+                isBidding: booking.isBiding,
+                groundId: booking.groundId,
+                userId: booking.userId,
+                createdAt: booking.createdAt,
+                updatedAt: booking.updatedAt,
+                __v: booking.__v
+            }))
+        );
 
         return res.status(200).json(
             new ApiResponse(200, { schedulingTime: flatSchedulingSlots }, "Success")
         );
 
-
-
     } catch (error) {
-        console.log(error);
-
+        console.error(error);
         res.status(500).json({
             success: false,
             message: "Server Error",
