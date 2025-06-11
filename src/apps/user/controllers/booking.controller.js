@@ -89,6 +89,9 @@ export const checkBookingStatus = asyncHandler(async (req, res) => {
 export const allBooking = asyncHandler(async (req, res) => {
     try {
         let { page, pageSize, date } = req.body;
+        const [day, month, year] = date.split('/').map(Number);
+        const startOfDay = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+        const endOfDay = new Date(Date.UTC(year, month - 1, day + 1, 0, 0, 0));
 
         page = parseInt(page) || 1; // Default to page 1 if not provided
         pageSize = parseInt(pageSize) || 10; // Default to pageSize 10 if not provided
@@ -96,9 +99,10 @@ export const allBooking = asyncHandler(async (req, res) => {
 
         let filter = {};
         if (date) {
-            filter.date = date;
+            filter.$gte = startOfDay;
+            filter.$lt = endOfDay;
         }
-        const booking = await Booking.find(filter)
+        const booking = await Booking.find()
             .skip(skip)
             .limit(pageSize)
             .sort({ date: -1 })
