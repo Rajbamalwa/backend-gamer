@@ -116,19 +116,14 @@ export const paymentStatus = async (req, res) => {
   res.send("Payment Success");
 }
 
-
-
 export const paymentSummary = async (req, res) => {
   const { bookingId } = req.body;
   const { _id: userId } = req.user;
 
-
   try {
-
-    const booking = await Booking.findById(bookingId)
+    const booking = await Booking.findById(bookingId);
     if (!booking) {
       return res.status(404).json(new ApiResponse(404, '', 'No Booking found'));
-
     }
 
     const groundReviewRating = await Reviews.aggregate([
@@ -157,42 +152,41 @@ export const paymentSummary = async (req, res) => {
       .populate({
         path: 'gameFeaturesId',
         select: 'name description',
-      }).lean()
-      .select('bookingStatus name likedBy pricing cancelPolicy  refundPolicy gameTypeId  image');
+      })
+      .select('name likedBy pricing cancelPolicy refundPolicy gameTypeId image')
+      .lean();
 
     if (!groundDetails) {
-      return res.status(404).json(new ApiResponse(404, '', 'No Data found'));
+      return res.status(404).json(new ApiResponse(404, '', 'No Ground Data found'));
     }
 
-    //ds
     const isLike = groundDetails.likedBy.some(id => id.toString() === userId.toString());
-    const neObje = {
-      ...groundDetails,
-      booking: {
-        bookingId:booking._id,
-        isLike,
-        bookingDate: booking.date,
-        bookingStatus: booking.bookingStatus,
-        bidingCost: booking.bidingCost,
-        slotCost: booking.slotCost,
-        payableAmount: booking.payableAmount,// iisue
-        serviceCost: booking.slotCost * 0.04,
-        totalSlot: booking.schedulingTime.length
 
-      },
-      schedulingTime: {
-        schedulingTime: booking.schedulingTime
+    const bookingData = {
+      bookingId: booking._id,
+      bookingDate: booking.date,
+      bookingStatus: booking.bookingStatus,
+      bidingCost: booking.bidingCost,
+      slotCost: booking.slotCost,
+      payableAmount: booking.payableAmount,
+      serviceCost: booking.slotCost * 0.04,
+      totalSlot: booking.schedulingTime.length,
+      isLike
+    };
 
+    const schedulingTime = booking.schedulingTime;
 
-      }
-      // <- add booking date
-
-    }
-
-
-    return res.status(200).json(new ApiResponse(200, { groundDetails: neObje, groundReviewRating },));
+    return res.status(200).json(
+      new ApiResponse(200, {
+        groundData: groundDetails,
+        bookingData,
+        schedulingTime,
+        groundReviewRating
+      }, 'Success')
+    );
   } catch (error) {
     console.error(error);
     return res.status(500).json(new ApiResponse(500, '', 'Server Error'));
   }
-}
+};
+
