@@ -164,7 +164,6 @@ export const paymentSummary = async (req, res) => {
 
     const bookingData = {
       bookingId: booking._id,
-      bookingDate: booking.date,
       bookingStatus: booking.bookingStatus,
       bidingCost: booking.bidingCost,
       slotCost: booking.slotCost,
@@ -174,7 +173,11 @@ export const paymentSummary = async (req, res) => {
       isLike
     };
 
-    const schedulingTime = booking.schedulingTime;
+    const schedulingTime = {
+      bookingDate: booking.date,
+      schedulingTime : booking.schedulingTime,
+      
+    }
 
     return res.status(200).json(
       new ApiResponse(200, {
