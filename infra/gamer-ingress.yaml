@@ -2,13 +2,16 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gamer-backend-ingress
+  namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
 spec:
+  ingressClassName: nginx  # Required for Kubernetes >= 1.19+
   tls:
     - hosts:
         - api.niogen.in
-      secretName: tls-secret
+      secretName: tls-secret  # Must exist already
   rules:
     - host: api.niogen.in
       http:
