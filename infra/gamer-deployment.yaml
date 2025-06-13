@@ -18,7 +18,7 @@ spec:
         - name: gamer-backend-container
           image: 093621304676.dkr.ecr.ap-south-1.amazonaws.com/backend-gamer:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 5006
           env:
             - name: PORT
               value: "5006"

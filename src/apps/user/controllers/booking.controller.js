@@ -213,7 +213,7 @@ export const getBooking = asyncHandler(async (req, res) => {
         return res.status(200).json(
             new ApiResponse(200, {
                 schedulingTime: flatSchedulingSlots,
-                price  : ground.pricing
+                price : ground.pricing
             }, "Success")
         );
 

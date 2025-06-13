@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gamer-backend-service
+spec:
+  selector:
+    app: gamer-backend
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80         # Cluster-internal port
+      targetPort: 5006 # Port inside container
+      nodePort: 32022  # Must be between 30000–32767
